@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('修改字典')" />
+</head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-dictionary-edit" th:object="${dictionary}">
+			<input id="dictId" name="id" type="hidden" th:field="*{id}" />
+			<input id="treeId" name="parentId" type="hidden" th:field="*{parentId}" />
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">上级字典：</label>
+				<div class="col-sm-8">
+				    <div class="input-group">
+						<input class="form-control" type="text" id="treeName" onclick="selectDictionaryTree()" readonly="readonly" th:value="${parent.dictName}">
+					    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+				    </div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">字典类型：</label>
+				<div class="col-sm-8">
+					<div class="radio-box" th:each="dict : ${@dict.getDict('sys_dict_type')}">
+						<input type="radio" th:id="${dict.id}" name="dictType" th:value="${dict.dictValue}" th:field="*{dictType}" disabled="disabled">
+						<label th:for="${dict.id}" th:text="${dict.dictName}"></label>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">字典名称：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="dictName" th:field="*{dictName}" id="dictName" required>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">字典健值：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="dictValue" th:field="*{dictValue}" placeholder="请输入字典键值">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">字典健值：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="dictLabel" th:field="*{dictLabel}" placeholder="请输入字典键值，如果字典类型是目录，格式：AA_BB_CC">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">字典状态：</label>
+				<div class="col-sm-8">
+					<div class="radio-box" th:each="dict : ${@dict.getDict('sys_data_status')}">
+						<input type="radio" th:id="${dict.id}" name="status" th:value="${dict.dictValue}" th:field="*{status}">
+						<label th:for="${dict.id}" th:text="${dict.dictName}"></label>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">是否默认：</label>
+				<div class="col-sm-8">
+				    <div class="radio-box" th:each="dict : ${@dict.getDict('sys_yes_no')}">
+						<input type="radio" th:id="${dict.id}" name="isDefault" th:value="${dict.dictValue}" th:field="*{isDefault}">
+						<label th:for="${dict.id}" th:text="${dict.dictName}"></label>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">显示顺序：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="number" name="orderNum" th:field="*{orderNum}" required="required">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">备注：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="remark" th:field="*{remark}">
+				</div>
+			</div>
+		</form>
+	</div>
+	<th:block th:include="include :: footer" />
+	<script type="text/javascript">
+		var prefix = ctx + "system/dictionary";
+		
+		$("#form-dictionary-edit").validate({
+			onkeyup: false,
+			rules:{
+				deptName:{
+					remote: {
+		                url: prefix + "/checkDictionaryNameUnique",
+		                type: "get",
+		                dataType: "json",
+		                data: {
+		                	id: function() {
+		                        return $("#dictId").val();
+		                    },
+		                    parentId: function() {
+		                        return $("#treeId").val();
+		                    },
+		                    deptName: function() {
+		                        return $.common.trim($("#dictName").val());
+		                    }
+		                },
+		                dataFilter: function(data, type) {
+		                	return $.validate.unique(data);
+		                }
+		            }
+				},
+				orderNum:{
+					digits:true
+				},
+				email:{
+                    email:true,
+        		},
+        		phone:{
+        			isPhone:true,
+        		},
+			},
+			messages: {
+				deptName: {
+		            remote: "字典已经存在"
+		        }
+		    },
+		    focusCleanup: true
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	        	$.operate.save(prefix + "/edit", $('#form-dictionary-edit').serialize());
+	        }
+	    }
+	
+		/*字典管理-修改-选择字典树*/
+		function selectDictionaryTree() {
+			var parentId = $("#treeId").val();
+			if(parentId != "root") {
+			    var options = {
+					title: '字典选择',
+					width: "380",
+					url: prefix + "/tree/" + parentId,
+					callBack: function (index, layero){
+			   			var body = layer.getChildFrame('body', index);
+			   			$("#treeId").val(body.find('#treeId').val());
+			   			$("#treeName").val(body.find('#treeName').val());
+			   			layer.close(index);
+					}
+				};
+				$.modal.openOptions(options);
+			}
+		}
+		
+		var dictType = $('input[name="dictType"]:checked').val();
+        trigger(dictType);
+		
+		/* 选择字典类型触发事件 */
+	    function trigger(dictType){
+	    	if(dictType == 'catalog'){
+	    		$('input[name="dictName"]').parents(".form-group").show();
+	    		$('input[name="dictValue"]').parents(".form-group").hide();
+	    		$('input[name="dictLabel"]').parents(".form-group").show();
+	    		$('input[name="isDefault"]').parents(".form-group").hide();
+	    	}else if(dictType == 'dictionary'){
+	    		$('input[name="dictName"]').parents(".form-group").show();
+	    		$('input[name="dictValue"]').parents(".form-group").show();
+	    		$('input[name="dictLabel"]').parents(".form-group").hide();
+	    		$('input[name="isDefault"]').parents(".form-group").show();
+	    	}
+	    }
+		
+	</script>
+</body>
+</html>

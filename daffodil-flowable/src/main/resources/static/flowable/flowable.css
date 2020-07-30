@@ -1,0 +1,74 @@
+.df-flow-body{
+	background-color: #e7e9ea;
+	width: 100%;
+	height: 100%;
+}
+.df-flow-head{
+	width: 100%;
+	height: 50px;
+	line-height: 50px;
+	position: fixed;
+	background: #fff;
+	top: 0;
+	z-index: 99;
+	border-bottom: 1px solid #e7e9ea;
+}
+.df-flow-head-icon{
+	float: left;
+	padding-left: 20px;
+	padding-top: 5px;
+	width: 10%;
+	color: #00a3e8;
+}
+.df-flow-head-btn{
+	float: left;
+	text-align: right;
+	padding-right: 20px;
+	width: 90%;
+}
+.df-flow-head-btn a{
+	margin: 0 5px;
+}
+.df-flow-main{
+	width: 1280px;
+	height: 100%;
+	margin: 0 auto;
+	padding-top: 50px;
+}
+.df-flow-info{
+	width: 100%;
+	height: 40px;
+	line-height: 40px;
+	border-bottom: 1px solid #e7e9ea;
+}
+.df-flow-info ul{
+	
+}
+.df-flow-info ul li{
+	float: left;
+	margin-right: 15px;
+}
+.df-flow-content{
+	padding-top: 10px;
+}
+
+.df-flow-content .nav-tabs > li > a{
+	color: #337ab7;
+	font-weight: normal;
+}
+
+.df-flow-select{
+	list-style: none;
+	padding: 10px 15px;
+}
+.df-flow-select li{
+	height: 32px;
+	line-height: 32px;
+	cursor: pointer;
+	padding: 0 5px;
+}
+.df-flow-select li:hover{
+	background-color: #f8f8f8;
+}
+
+

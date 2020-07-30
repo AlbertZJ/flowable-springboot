@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/daffodil.iml" filepath="$PROJECT_DIR$/daffodil.iml" />
+      <module fileurl="file://$PROJECT_DIR$/daffodil-core/daffodil-core.iml" filepath="$PROJECT_DIR$/daffodil-core/daffodil-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/daffodil-devtool/daffodil-devtool.iml" filepath="$PROJECT_DIR$/daffodil-devtool/daffodil-devtool.iml" />
+      <module fileurl="file://$PROJECT_DIR$/daffodil-flowable/daffodil-flowable.iml" filepath="$PROJECT_DIR$/daffodil-flowable/daffodil-flowable.iml" />
+      <module fileurl="file://$PROJECT_DIR$/daffodil-starter/daffodil-starter.iml" filepath="$PROJECT_DIR$/daffodil-starter/daffodil-starter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/daffodil-system/daffodil-system.iml" filepath="$PROJECT_DIR$/daffodil-system/daffodil-system.iml" />
+    </modules>
+  </component>
+</project>

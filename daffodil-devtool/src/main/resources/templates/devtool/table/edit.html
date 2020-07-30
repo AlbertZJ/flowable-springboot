@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('修改库表信息')" />
+	<th:block th:include="include :: select2-css" />
+	<style type="text/css">
+	    .select-table table{table-layout:fixed;}.table>thead>tr>th{text-align:center;}.select-table .table td{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.form-control{padding:3px 6px 4px;height:30px;}.icheckbox-blue{top:0px;left:6px;}.form-control.select2-hidden-accessible{position:static!important;}.select-table table label.error{position: inherit;}select + label.error{z-index:1;right:40px;}
+	</style>
+</head>
+<body class="gray-bg" style="font: 14px Helvetica Neue, Helvetica, PingFang SC, 微软雅黑, Tahoma, Arial, sans-serif !important;">
+    <section class="section-content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content" style="border-style:none;">
+                    <div class="nav-tabs-custom">
+                        <ul class="nav nav-tabs">
+                            <li><a href="#tab-basic" data-toggle="tab" aria-expanded="false">基本信息</a></li>
+                            <li><a href="#tab-gen" data-toggle="tab" aria-expanded="false">生成信息</a></li>
+                            <li class="active"><a href="#tab-field" data-toggle="tab" aria-expanded="true">字段信息</a></li>
+                            <li class="pull-right header"><i class="fa fa-code"></i> 生成配置</li>
+                        </ul>
+                        <form id="form-gen-edit" class="form-horizontal" th:object="${table}">
+                        <input id="id" name="id" type="hidden" th:field="*{id}" />
+                        <input id="tableId" name="tableId" type="hidden" th:value="*{id}" />
+                        <div class="tab-content">
+                            <!-- 基本信息 -->
+                            <div class="tab-pane" id="tab-basic">
+				            <div class="row mt20">
+				            	<div class="col-sm-6">
+				                    <div class="form-group">
+				                        <label class="col-sm-4 control-label"><span style="color: red; ">*</span>表名称：</label>
+				                        <div class="col-sm-8">
+				                            <input name="tableName" class="form-control" type="text" placeholder="请输入表名称" maxlength="200" th:field="*{tableName}" required>
+				                        </div>
+				                    </div>
+				                </div>
+				                <div class="col-sm-6">
+				                    <div class="form-group">
+				                        <label class="col-sm-4 control-label"><span style="color: red; ">*</span>表描述：</label>
+				                        <div class="col-sm-8">
+				                            <input name="tableComment" class="form-control" type="text" placeholder="请输入表描述" maxlength="500" th:field="*{tableComment}" required>
+				                        </div>
+				                    </div>
+				                </div>
+				            </div>
+				            <div class="row">
+				                <div class="col-sm-6">
+				                    <div class="form-group">
+				                        <label class="col-sm-4 control-label"><span style="color: red; ">*</span>实体类名称：</label>
+				                        <div class="col-sm-8">
+				                            <input name="className" class="form-control" type="text" placeholder="请输入实体类名称" maxlength="100" th:field="*{className}" required>
+				                        </div>
+				                    </div>
+				                </div>
+				                <div class="col-sm-6">
+				                    <div class="form-group">
+				                        <label class="col-sm-4 control-label"><span style="color: red; ">*</span>作者：</label>
+				                        <div class="col-sm-8">
+				                            <input name="functionAuthor" class="form-control" type="text" placeholder="请输入作者" maxlength="50" th:field="*{functionAuthor}" required>
+				                        </div>
+				                    </div>
+				                </div>
+				            </div>
+				            <div class="row">
+				                <div class="col-sm-12">
+				                    <div class="form-group">
+				                        <label class="col-xs-2 control-label">备注：</label>
+				                        <div class="col-xs-10">
+				                            <textarea name="remark" th:field="*{remark}" maxlength="500" class="form-control" rows="3"></textarea>
+				                        </div>
+				                    </div>
+				                </div>
+				            </div>
+                            </div>
+                            
+                            <!-- 生成信息 -->
+                            <div class="tab-pane" id="tab-gen">
+					            <div class="row mt20">
+					            	<div class="col-sm-6">
+					                    <div class="form-group">
+					                        <label class="col-sm-4 control-label"><span style="color: red; ">*</span>生成模板：</label>
+					                        <div class="col-sm-8">
+					                            <select class='form-control' id="tplCategory" name='tplCategory' style="width: 100%">
+												    <option value="crud" th:field="*{tplCategory}">单表（增删改查）</option>
+												    <option value="tree" th:field="*{tplCategory}">树表（增删改查）</option>
+												</select>
+					                        </div>
+					                    </div>
+					                </div>
+					                <div class="col-sm-6">
+					                    <div class="form-group">
+					                        <label class="col-sm-4 control-label" title="生成在哪个java包下，例如 com.daffodil.myapp"><span style="color: red; ">*</span>生成包路径：<i class="fa fa-question-circle-o"></i></label>
+					                        <div class="col-sm-8">
+					                            <input name="packageName" class="form-control" type="text" placeholder="请输入生成包路径，例如 com.daffodil.myapp" maxlength="100" th:field="*{packageName}" required>
+					                        </div>
+					                    </div>
+					                </div>
+					            </div>
+					            <div class="row">
+					                <div class="col-sm-6">
+					                    <div class="form-group">
+					                        <label class="col-sm-4 control-label" title="可理解为子系统名，例如 school"><span style="color: red; ">*</span>生成模块名：<i class="fa fa-question-circle-o"></i></label>
+					                        <div class="col-sm-8">
+					                            <input name="moduleName" class="form-control" type="text" placeholder="请输入生成模块名，例如 school" maxlength="30" th:field="*{moduleName}" required>
+					                        </div>
+					                    </div>
+					                </div>
+					                <div class="col-sm-6">
+					                    <div class="form-group">
+					                        <label class="col-sm-4 control-label" title="可理解为功能英文名，例如 student"><span style="color: red; ">*</span>生成业务名：<i class="fa fa-question-circle-o"></i></label>
+					                        <div class="col-sm-8">
+					                            <input name="businessName" class="form-control" type="text" placeholder="请输入生成业务名，例如 student" maxlength="50" th:field="*{businessName}" required>
+					                        </div>
+					                    </div>
+					                </div>
+					            </div>
+					            <div class="row">
+					                <div class="col-sm-6">
+					                    <div class="form-group">
+					                        <label class="col-sm-4 control-label" title="用作类描述，例如 用户"><span style="color: red; ">*</span>生成功能名：<i class="fa fa-question-circle-o"></i></label>
+					                        <div class="col-sm-8">
+					                            <input name="functionName" class="form-control" type="text" placeholder="请输入生成功能名，例如 学生信息" maxlength="50" th:field="*{functionName}" required>
+					                        </div>
+					                    </div>
+					                </div>
+					            </div>
+					            <div class="hidden" id="otherInfo">
+					            <h4 class="form-header h4">其他信息</h4>
+					            <div class="row">
+					                <div class="col-sm-6">
+					                    <div class="form-group">
+					                        <label class="col-sm-4 control-label" title="树显示的编码字段名， 如：dept_id"><span style="color: red; ">*</span>树编码字段：<i class="fa fa-question-circle-o"></i></label>
+					                        <div class="col-sm-8">
+					                            <select class='form-control' id="treeCode" name="treeCode" style="width: 100%">
+					                                <option value="">---请选择---</option>
+												    <option th:each="column : ${table.columns}" th:text="${column.javaField + '：' + column.columnComment}" th:value="${column.javaField}" th:field="*{treeCode}"></option>
+												</select>
+					                        </div>
+					                    </div>
+					                </div>
+					                <div class="col-sm-6">
+					                    <div class="form-group">
+					                        <label class="col-sm-4 control-label" title="树显示的父编码字段名， 如：parent_Id"><span style="color: red; ">*</span>树父编码字段：<i class="fa fa-question-circle-o"></i></label>
+					                        <div class="col-sm-8">
+					                            <select class='form-control' id="treeParentCode" name="treeParentCode" style="width: 100%">
+												    <option value="">---请选择---</option>
+												    <option th:each="column : ${table.columns}" th:text="${column.javaField + '：' + column.columnComment}" th:value="${column.javaField}" th:field="*{treeParentCode}"></option>
+												</select>
+					                        </div>
+					                    </div>
+					                </div>
+					            </div>
+					            <div class="row">
+					                <div class="col-sm-6">
+					                    <div class="form-group">
+					                        <label class="col-sm-4 control-label" title="树节点的显示名称字段名， 如：dept_name"><span style="color: red; ">*</span>树名称字段：<i class="fa fa-question-circle-o"></i></label>
+					                        <div class="col-sm-8">
+					                            <select class='form-control' id="treeName" name='treeName' style="width: 100%">
+												    <option value="">---请选择---</option>
+												    <option th:each="column : ${table.columns}" th:text="${column.javaField + '：' + column.columnComment}" th:value="${column.javaField}" th:field="*{treeName}"></option>
+												</select>
+					                        </div>
+					                    </div>
+					                </div>
+					            </div>
+					            </div>
+                            </div>
+                            
+                            <!-- 字段信息 -->
+                            <div class="tab-pane active" id="tab-field">
+                                <div class="select-table table-striped" style="margin-top: 0px;padding-top: 0px;padding-bottom: 0px;">
+								    <table id="bootstrap-table" data-use-row-attr-func="true" data-reorderable-rows="true"></table>
+								</div>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+               <div class="box-footer" style="height: 50px;">
+			       <div class="col-sm-offset-5 col-sm-6">
+			       	   <button type="button" class="btn btn-sm btn-primary" onclick="addTableColmn()">添加字段</button>&nbsp;
+			           <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()">保 存</button>&nbsp;
+			           <button type="button" class="btn btn-sm btn-default" onclick="closeItem()">关 闭 </button>
+			       </div>
+           	   </div>
+            </div>
+        </div>
+    </div>
+	</section>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: select2-js" />
+    <th:block th:include="include :: bootstrap-table-reorder-js" />
+    <script th:src="@{/js/jquery.tmpl.js}"></script>
+    <script type="text/javascript">
+    	var prefix = ctx + "devtool/table";
+    	
+    	/*添加字段*/
+    	function addTableColmn() {
+			var url = ctx + 'devtool/metadata/select/' + $("#tableId").val();
+		    $.modal.openFull("添加字段", url);
+		}
+		
+	    /*数据库表信息-保存*/
+	    function submitHandler() {
+	        if ($.validate.form()) {
+	        	//$.operate.saveTab(prefix + "/edit", $("#form-gen-edit").serializeArray());
+	        	var config = {
+        	        url: prefix + "/edit",
+        	        type: "post",
+        	        dataType: "json",
+        	        data: $("#form-gen-edit").serializeArray(),
+        	        beforeSend: function () {
+        	        	$.modal.loading("正在处理中，请稍后...");
+        	        },
+        	        success: function(result) {
+        	        	$.modal.closeLoading();
+        	        	if(result.code == 0){
+        	        		
+        	        	}else{
+        	        		$.modal.alertError(result.msg);
+        	        	}
+        	        }
+        	    };
+        	    $.ajax(config);
+	        }
+	    }
+	    
+		$(function() {
+		    var options = {
+		        url: prefix + "/column/list",
+		        removeUrl: prefix + "/column/remove",
+		        modalName: "字段",
+		        sortName: "sort",
+		        sortOrder: "desc",
+		        height: $(window).height() - 166,
+		        pagination: false,
+		        showSearch: false,
+		        showRefresh: false,
+		        showToggle: false,
+		        showColumns: false,
+		        onLoadSuccess: onLoadSuccess,
+		        onReorderRow: onReorderRow,
+		        columns: [{
+                    title: "序号",
+                    width: "4%",
+                    formatter: function (value, row, index) {
+                    	// 编号隐藏域
+                    	var columnIdHtml = $.common.sprintf("<input type='hidden' name='columns[%s].id' value='%s'>", index, row.id);
+                    	// 排序隐藏域
+                    	var sortHtml = $.common.sprintf("<input type='hidden' name='columns[%s].sort' value='%s' id='columns_sort_%s'>", index, row.sort, row.id);
+                    	return columnIdHtml + sortHtml + $.table.serialNumber(index);
+                    },
+                    align : 'center',
+                    cellStyle: function(value, row, index) {
+                        return { css: { "cursor": "move" } };
+                    }
+                },
+		        {
+		            field: 'columnName',
+		            title: '字段列名',
+		            width: "10%",
+		            class: "nodrag",
+		            cellStyle: function(value, row, index) {
+                        return { css: { "cursor": "default" } };
+                    }
+		        },
+		        {
+		            field: 'javaField',
+		            title: 'Java属性',
+		            width: "12%",
+		            formatter: function (value, row, index) {
+		        		var html = $.common.sprintf("<input class='form-control' type='text' name='columns[%s].javaField' value='%s' required>", index, value);
+		        		html += $.common.sprintf("<input class='form-control' type='hidden' name='columns[%s].columnName' value='%s' required>", index, row.columnName);
+		        		return html;
+		        	}
+		        },
+		        {
+		            field: 'columnComment',
+		            title: '字段描述',
+		            width: "10%",
+		            formatter: function (value, row, index) {
+		            	var html = $.common.sprintf("<input class='form-control' type='text' name='columns[%s].columnComment' value='%s'>", index, value);
+		        		return html;
+		        	}
+		        },
+		        {
+		            field: 'columnType',
+		            title: '字段类型',
+		            width: "8%",
+		            formatter: function (value, row, index) {
+		        		var data = [{ index: index, columnType: value }];
+		                return $("#columnTypeTpl").tmpl(data).html();
+		        	}
+		        },
+		        {
+		            field: 'isPk',
+		            title: '主键',
+		            align : 'center',
+		            width: "4%",
+		            formatter: function (value, row, index) {
+		            	var isCheck = value == 'Y' ? 'checked' : '';
+		            	var html = $.common.sprintf("<label class='check-box'><input type='checkbox' class='isPkColumn' name='columns[%s].isPk' value='Y' %s></label>", index, isCheck);
+		        		return html;
+		        	}
+		        },
+		        {
+		            field: 'isRequired',
+		            title: '必填',
+		            align : 'center',
+		            width: "4%",
+		            formatter: function (value, row, index) {
+		            	var isCheck = value == 'Y' ? 'checked' : '';
+		            	var html = $.common.sprintf("<label class='check-box'><input type='checkbox' name='columns[%s].isRequired' value='Y' %s></label>", index, isCheck);
+		        		return html;
+		        	}
+		        },
+		        {
+		            field: 'isInsert',
+		            title: '插入',
+		            align : 'center',
+		            width: "4%",
+		            formatter: function (value, row, index) {
+		            	var isCheck = value == 'Y' ? 'checked' : '';
+		            	var html = $.common.sprintf("<label class='check-box'><input type='checkbox' name='columns[%s].isInsert' value='Y' %s></label>", index, isCheck);
+		        		return html;
+		        	}
+		        },
+		        {
+		            field: 'isEdit',
+		            title: '编辑',
+		            align : 'center',
+		            width: "4%",
+		            formatter: function (value, row, index) {
+		            	var isCheck = value == 'Y' ? 'checked' : '';
+		            	var html = $.common.sprintf("<label class='check-box'><input type='checkbox' name='columns[%s].isEdit' value='Y' %s></label>", index, isCheck);
+		        		return html;
+		        	}
+		        },
+		        {
+		            field: 'isList',
+		            title: '列表',
+		            align : 'center',
+		            width: "4%",
+		            formatter: function (value, row, index) {
+		            	var isCheck = value == 'Y' ? 'checked' : '';
+		            	var html = $.common.sprintf("<label class='check-box'><input type='checkbox' name='columns[%s].isList' value='Y' %s></label>", index, isCheck);
+		        		return html;
+		        	}
+		        },
+		        {
+		            field: 'isQuery',
+		            title: '查询',
+		            align : 'center',
+		            width: "4%",
+		            formatter: function (value, row, index) {
+		            	var isCheck = value == 'Y' ? 'checked' : '';
+		            	var html = $.common.sprintf("<label class='check-box'><input type='checkbox' name='columns[%s].isQuery' value='Y' %s></label>", index, isCheck);
+		        		return html;
+		        	}
+		        },
+		        {
+		            field: 'queryType',
+		            title: '查询方式',
+		            width: "7%",
+		            formatter: function (value, row, index) {
+		            	var data = [{ index: index, queryType: value }];
+		                return $("#queryTypeTpl").tmpl(data).html();
+		        	}
+		        },
+		        {
+		            field: 'htmlType',
+		            title: '显示类型',
+		            width: "7%",
+		            formatter: function (value, row, index) {
+		            	var data = [{ index: index, htmlType: value }];
+		                return $("#htmlTypeTpl").tmpl(data).html();
+		        	}
+		        },
+		        {
+		            field: 'dictType',
+		            title: '字典类型',
+		            width: "12%",
+		            formatter: function (value, row, index) {
+		            	value = value == null ? '' : value;
+		        		var html = $.common.sprintf("<input class='form-control' type='text' name='columns[%s].dictType' value='%s' id='columns_dict_%s'>", index, value, row.id);
+		        		return "<div class='input-group'>" + html + "<span class='input-group-addon input-sm' onclick='selectDictTree(\"" + row.id + "\",this)'><i class='fa fa-search'></i></span></div>";
+		        	},
+		        	cellStyle: function(value, row, index) {
+                        return { css: { "cursor": "default" } };
+                    }
+		        },
+		        {
+		            title: '操作',
+		            align: 'center',
+		            width: "6%",
+		            formatter: function(value, row, index) {
+		            	return $('#operateTpl').tmpl(row).html();
+		            }
+		        }]
+		    };
+		    $.table.init(options);
+		});
+		
+		// 当所有数据被加载时触发处理函数
+		function onLoadSuccess(data){
+			$.fn.select2.defaults.set( "theme", "bootstrap" );
+			$("select.form-control").each(function () {
+				$(this).select2().on("change", function () {
+					$(this).valid();
+				})
+			});
+			$(".check-box").each(function() {
+	            $(this).iCheck({
+	                checkboxClass: 'icheckbox-blue'
+            	})
+        	});
+        	
+        	//主键校验
+        	$('.isPkColumn').each(function(i, element) {
+        		var name = $(this).attr('name');
+        		var javaField = name.replace('isPk', 'javaField');
+        		var isRequired = name.replace('isPk', 'isRequired');
+        		var checked = $(this).is(':checked');
+        		if(checked){
+        			$('input[name="' + javaField + '"]').val('id').attr("readonly",true);
+        			$('input[name="' + isRequired + '"]').iCheck("check");//主键一定是必填项
+    				$('.isPkColumn').each(function(i, element) {
+    					if(name != $(this).attr('name')){
+    						$(this).attr("disabled",true);
+    					}
+    				});
+        		}
+			});
+			
+			$('input[type="checkbox"]').on('ifChanged', function(event){ 
+	    		var name = $(this).attr('name');
+	    		var columnName = name.replace('isPk', 'columnName');
+	    		var javaField = name.replace('isPk', 'javaField');
+	    		var isRequired = name.replace('isPk', 'isRequired');
+	    		var checked = $(this).is(':checked');
+	    		if(name.indexOf('isPk') > -1){
+	    			if(checked){
+	    				$('input[name="' + javaField + '"]').val('id').attr("readonly",true);
+	    				$('input[name="' + isRequired + '"]').iCheck("check");//主键一定是必填项
+	    				$('.isPkColumn').each(function(i, element) {
+	    					if(name != $(this).attr('name')){
+	    						$(this).attr("disabled",true);
+	    					}
+	    				});
+	    			}else{
+	    				var camelCase  = $.common.toCamelCase($('input[name="' + columnName + '"]').val());
+	    				$('input[name="' + javaField + '"]').val(camelCase).attr("readonly",false);
+	    				$('.isPkColumn').each(function(i, element) {
+	    					$(this).attr("disabled",false);
+	    				});
+	    			}
+	    		}
+	    	});
+	    	
+        }
+		
+		// 当拖拽结束后处理函数
+		function onReorderRow(data) {
+	        for (var i = 0; i < data.length; i++) {
+			    $("#columns_sort_" + data[i].columnId).val(i+1);
+			}
+       }
+		
+		$(function() {
+            var tplCategory = $("#tplCategory option:selected").val();
+            tplCategoryVisible(tplCategory);
+        });
+		
+		$('#tplCategory').on('select2:select', function (event) {
+			var tplCategory = $(event.target).val();
+			tplCategoryVisible(tplCategory);
+		});
+		
+		function tplCategoryVisible(tplCategory) {
+			if("crud" == tplCategory){
+				$("#treeCode").select2("val", [""]);
+				$("#treeParentCode").select2("val", [""]);
+				$("#treeName").select2("val", [""]);
+				$("#otherInfo").addClass("hidden");
+				
+			} else if("tree" == tplCategory){
+				$("#otherInfo").removeClass("hidden");
+				$("#treeCode").attr("required", "true");
+				$("#treeParentCode").attr("required", "true");
+				$("#treeName").attr("required", "true");
+			}
+        }
+		
+		var tempColumnId = '';//临时缓存数据
+		// 选择字典处理函数
+		function selectDictTree(columnId, obj) {
+			tempColumnId = columnId;
+        	var url = ctx + "system/dictionary/tree/root";
+			var options = {
+				title: '选择字典类型',
+				width: "380",
+				url: url,
+				callBack: doSubmit
+			};
+			$.modal.openOptions(options);
+		}
+		
+		function doSubmit(index, layero){
+			var body = layer.getChildFrame('body', index);
+   			var dictId = body.find('#treeId').val();
+			var treeValue = body.find('#treeValue').val();
+   			layer.close(index);
+   			$("#columns_dict_" + tempColumnId).val(treeValue);
+   			tempColumnId = '';
+		}
+		
+    </script>
+</body>
+</html>
+
+<!-- 表格操作列 -->
+<script id="operateTpl" type="text/template">
+<tmpl>
+	<a href="javascript:$.operate.remove('${id}')" shiro:hasPermission="devtool:column:remove" class="btn btn-danger btn-xs">
+		<i class="fa fa-trash"></i> 删除
+	</a> 
+</tmpl>
+</script>
+
+<!-- java类型 -->
+<script id="columnTypeTpl" type="text/x-jquery-tmpl">
+<tmpl>
+<select class='form-control' name='columns[${index}].columnType'>
+	<option value="String" {{if columnType==="String"}}selected{{/if}}>String</option>
+    <option value="Integer" {{if columnType==="Integer"}}selected{{/if}}>Integer</option>
+	<option value="Long" {{if columnType==="Long"}}selected{{/if}}>Long</option>
+    <option value="Double" {{if columnType==="Double"}}selected{{/if}}>Double</option>
+	<option value="BigDecimal" {{if columnType==="BigDecimal"}}selected{{/if}}>BigDecimal</option>
+    <option value="Date" {{if columnType==="Date"}}selected{{/if}}>Date</option>
+</select>
+</tmpl>
+</script>
+
+<!-- 查询方式 -->
+<script id="queryTypeTpl" type="text/x-jquery-tmpl">
+<tmpl>
+<select class='form-control' name='columns[${index}].queryType'>
+	<option value="" {{if queryType==="NONE"}}selected{{/if}}>请选择</option>
+    <option value="EQ" {{if queryType==="EQ"}}selected{{/if}}>=</option>
+    <option value="NEQ" {{if queryType==="NEQ"}}selected{{/if}}>!=</option>
+    <option value="LEQ" {{if queryType==="LEQ"}}selected{{/if}}><=</option>
+    <option value="LT" {{if queryType==="LT"}}selected{{/if}}><</option>
+    <option value="REQ" {{if queryType==="REQ"}}selected{{/if}}>>=</option>
+    <option value="RT" {{if queryType==="RT"}}selected{{/if}}>></option>
+    <option value="LIKE" {{if queryType==="LIKE"}}selected{{/if}}>like</option>
+    <!--<option value="BETWEEN" {{if queryType==="BETWEEN"}}selected{{/if}}>Between</option>-->
+</select>
+</tmpl>
+</script>
+
+<!-- 显示类型 -->
+<script id="htmlTypeTpl" type="text/x-jquery-tmpl">
+<tmpl>
+<select class='form-control' name='columns[${index}].htmlType'>
+    <option value="input" {{if htmlType==="input"}}selected{{/if}}>文本框</option>
+    <option value="textarea" {{if htmlType==="textarea"}}selected{{/if}}>文本域</option>
+    <option value="select" {{if htmlType==="select"}}selected{{/if}}>下拉框</option>
+    <option value="radio" {{if htmlType==="radio"}}selected{{/if}}>单选框</option>
+    <option value="checkbox" {{if htmlType==="checkbox"}}selected{{/if}}>复选框</option>
+    <option value="datetime" {{if htmlType==="datetime"}}selected{{/if}}>日期控件</option>
+</select>
+</tmpl>
+</script>

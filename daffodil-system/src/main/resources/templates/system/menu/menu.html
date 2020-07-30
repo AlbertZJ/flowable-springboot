@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('菜单列表')" />
+</head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="menu-form">
+					<div class="select-list">
+						<ul>
+							<li>
+								菜单名称：<input type="text" name="menuName" placeholder="请输入菜单名称"/>
+							</li>
+							<li>
+								菜单状态：<select name="visible" th:with="type=${@dict.getDict('sys_show_hide')}">
+									<option value="">所有</option>
+									<option th:each="dict : ${type}" th:text="${dict.dictName}" th:value="${dict.dictValue}"></option>
+								</select>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.treeTable.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-default btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+                
+            <div class="btn-group-sm" id="toolbar" role="group">
+		        <a class="btn btn-primary" onclick="$.operate.add('root')" shiro:hasPermission="system:menu:add">
+                    <i class="fa fa-plus"></i> 新增
+                </a>
+                <a class="btn btn-primary" onclick="$.operate.edit()" shiro:hasPermission="system:menu:edit">
+		            <i class="fa fa-edit"></i> 修改
+		        </a>
+                <a class="btn btn-primary" id="expandAllBtn">
+                    <i class="fa fa-exchange"></i> 展开/折叠
+                </a>
+	        </div>
+       		 <div class="col-sm-12 select-table table-striped">
+	            <table id="bootstrap-tree-table"></table>
+	        </div>
+	    </div>
+	</div>
+	
+	<th:block th:include="include :: footer" />
+	<script th:inline="javascript">
+		var prefix = ctx + "system/menu";
+
+		$(function() {
+		    var options = {
+		        code: "id",
+		        parentCode: "parentId",
+		        uniqueId: "id",
+		        expandAll: false,
+		        expandFirst: false,
+		        url: prefix + "/list",
+		        createUrl: prefix + "/add/{id}",
+		        updateUrl: prefix + "/edit/{id}",
+		        removeUrl: prefix + "/remove/{id}",
+		        modalName: "菜单",
+		        columns: [{
+                    field: 'selectItem', 
+                    radio: true
+                 },
+                 {
+		            title: '菜单名称',
+		            field: 'menuName',
+		            width: '20%',
+		            formatter: function(value, row, index) {
+		                if ($.common.isEmpty(row.icon)) {
+		                    return row.menuName;
+		                } else {
+		                    return '<i class="' + row.icon + '"></i> <span class="nav-label">' + row.menuName + '</span>';
+		                }
+		            }
+		        },
+		        {
+		            field: 'orderNum',
+		            title: '显示顺序',
+		            width: '10%'
+		        },
+		        {
+		            field: 'url',
+		            title: '请求地址',
+		            width: '15%'
+		        },
+		        {
+		            title: '菜单类型',
+		            field: 'menuType',
+		            width: '10%'
+		        },
+		        {
+		            field: 'visible',
+		            title: '是否可见',
+		            width: '10%'
+		        },
+		        {
+		            field: 'perms',
+		            title: '权限标识',
+		            width: '15%'
+		        },
+		        {
+		            title: '操作',
+		            width: '20%',	
+		            formatter: function(value, row, index) {
+		            	return $('#operateTpl').tmpl(row).html();
+		            }
+		        }]
+		    };
+		    $.treeTable.init(options);
+		});
+	</script>
+</body>
+<!-- 表格操作列 -->
+<script id="operateTpl" type="text/template">
+<tmpl>
+	<a href="javascript:$.operate.add('${id}')" shiro:hasPermission="system:menu:add" class="btn btn-primary btn-xs">
+		<i class="fa fa-plus"></i> 新增
+	</a>
+	<a href="javascript:$.operate.edit('${id}')" shiro:hasPermission="system:menu:edit" class="btn btn-primary btn-xs">
+		<i class="fa fa-edit"></i> 修改
+	</a>
+	<a href="javascript:$.operate.remove('${id}')" shiro:hasPermission="system:menu:remove" class="btn btn-danger btn-xs">
+		<i class="fa fa-trash"></i> 删除
+	</a> 
+</tmpl>
+</script>
+</html>

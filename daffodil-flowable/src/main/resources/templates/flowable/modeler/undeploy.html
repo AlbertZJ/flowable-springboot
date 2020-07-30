@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('流程待发布列表')" />
+</head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="modeler-form">
+					<div class="select-list">
+						<ul>
+							<li>
+								流程名称：<input type="text" name="name" placeholder="请输入流程名称"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-default btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm" id="toolbar" role="group">
+		        <a class="btn btn-primary single disabled" onclick="deploy()" shiro:hasPermission="flowable:modeler:deploy">
+		            <i class="fa fa-flag-o"></i> 发布
+		        </a>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+	            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+	        </div>
+    	</div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "flowable/modeler";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list/undeploy",
+                detailUrl: prefix + "/image/{id}",
+                modalName: "流程",
+                pagination: false,
+                columns: [{
+		            checkbox: true
+		        },
+		        {
+		            field: 'id',
+		            visible: false
+		        },
+				{
+					field : 'name', 
+					title : '流程名称' 
+				},
+				{
+		            field: 'modelKey',
+		            title: '流程标识',
+		            align: 'center'
+		        },
+		        {
+		            field: 'version',
+		            title: '流程版本',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	return '<span class="badge badge-info">V.' + value + '</span>';
+		            }
+		        },
+				{
+		            field: 'createTime',
+		            title: '创建时间'
+		        },
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	return $('#operateTpl').tmpl(row).html();
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+        
+        function deploy(id){
+        	var id = $.common.isEmpty(id) ? $.table.selectFirstColumns() : id;
+    	    if (id.length == 0) {
+    			$.modal.alertWarning("请先选择一条记录");
+    			return;
+    		}
+    	    var options = {
+   				title: '选择发布流程类型',
+   				width: "380",
+   				url: prefix + "/category/" + id,
+   				callBack: function(index, layero){
+					var body = layer.getChildFrame('body', index);
+					var modelId = body.find('#modelId').val();
+					var typeId = body.find('#treeId').val();
+		   			var data = {"modelId" : modelId, "typeId" : typeId};
+		   			$.operate.post(prefix + "/deploy", data);
+		   			layer.close(index);
+				}
+   			};
+   			$.modal.openOptions(options);
+        }
+    </script>
+</body>
+<!-- 表格操作列 -->
+<script id="operateTpl" type="text/template">
+<tmpl>
+	<a href="javascript:$.operate.detail('${id}')" shiro:hasPermission="flowable:modeler:image" class="btn btn-info btn-xs">
+		<i class="fa fa-search"></i>流程图
+	</a>
+	<a href="javascript:deploy('${id}')" shiro:hasPermission="flowable:modeler:deploy" class="btn btn-success btn-xs">
+		<i class="fa fa-flag-o"></i>发布
+	</a> 
+</tmpl>
+</script>
+</html>

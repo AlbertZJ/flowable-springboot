@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('流程图')" />
+	<style type="text/css">
+	.flowgrid{
+		background-image: linear-gradient(90deg, rgba(235, 100, 60, 0.15) 10%, rgba(0, 0, 0, 0) 10%),
+		linear-gradient(rgba(235, 100, 60, 0.15) 10%, rgba(0, 0, 0, 0) 10%); background-size: 10px 10px;
+		height: 100%;
+	}
+	</style>
+</head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content flowgrid">
+		<img alt="流程图" src="" th:src="'/flowable/modeler/diagram/' + ${modelId}" >
+	</div>
+	<th:block th:include="include :: footer" />
+</body>
+</html>

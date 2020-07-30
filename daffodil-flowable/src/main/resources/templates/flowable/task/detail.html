@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('流程步骤详情')" />
+</head>
+<body class="white-bg">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="ibox">
+				<div class="ibox-content">
+					<ul class="connectList agile-list" th:each="activity : ${activitys}">
+						<li class="warning-element" th:class="${activityStat.index % 2 == 0 ? 'warning-element' : 'success-element'}">
+							<div>环节名称：[[${activity.activityName}]] </div>
+							<div th:if="${activity.deleteReason != null}">办理意见：[[${activity.deleteReason}]]</div>
+							<div th:if="${activity.deleteReason == null && activity.comment != null}">办理意见：[[${activity.comment}]]</div>
+							<div class="agile-detail">
+								<a class="pull-right btn btn-xs btn-white" th:if="${activity.assignee != null}" >执行人：[[${activity.assignee}]]</a> 
+								<i class="fa fa-clock-o"></i> 
+									[[${#dates.format(activity.startTime,'yyyy-MM-dd HH:mm:ss')}]]
+									 ~ 
+									[[${activity.endTime != null ? #dates.format(activity.endTime,'yyyy-MM-dd HH:mm:ss') : '正在办理 . . . '}]]
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<th:block th:include="include :: footer" />
+</body>
+</html>

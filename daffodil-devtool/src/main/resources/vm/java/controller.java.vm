@@ -1,0 +1,208 @@
+package ${packageName}.controller;
+
+import java.util.List;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.daffodil.core.annotation.FormToken;
+import com.daffodil.core.annotation.FormToken.TokenType;
+import com.daffodil.core.annotation.Log;
+import com.daffodil.core.annotation.Log.BusinessType;
+import com.daffodil.core.entity.JsonResult;
+#if($table.crud)
+import com.daffodil.core.entity.Page;
+#end
+import com.daffodil.core.entity.TableInfo;
+import com.daffodil.system.controller.SystemController;
+import com.daffodil.util.ExcelUtils;
+#if($table.crud)
+import com.daffodil.util.text.Convert;
+#end
+import ${packageName}.entity.${ClassName};
+import ${packageName}.service.I${ClassName}Service;
+#if($table.tree)
+import com.daffodil.core.entity.Ztree;
+#end
+
+/**
+ * ${functionName}控制器
+ * 
+ * @author ${author}
+ * @date ${datetime}
+ * @version 1.0
+ */
+@Controller
+@RequestMapping("/${moduleName}/${businessName}")
+public class ${ClassName}Controller extends SystemController {
+    private String prefix = "${moduleName}/${businessName}";
+
+    @Autowired
+    private I${ClassName}Service ${className}Service;
+
+    @RequiresPermissions("${permissionPrefix}:view")
+    @GetMapping()
+    public String ${businessName}() {
+        return prefix + "/${businessName}";
+    }
+
+#if($table.tree)
+    /**
+     * 查询${functionName}列表
+     */
+    @SuppressWarnings("unchecked")
+    @RequiresPermissions("${permissionPrefix}:list")
+    @GetMapping("/list")
+    @ResponseBody
+    public TableInfo list(${ClassName} ${className}) {
+        initQuery(${className});
+        List<${ClassName}> list = ${className}Service.select${ClassName}List(query);
+        return initTableInfo(list);
+    }
+#elseif($table.crud)
+    /**
+     * 查询${functionName}列表
+     */
+    @SuppressWarnings("unchecked")
+    @RequiresPermissions("${permissionPrefix}:list")
+    @GetMapping("/list")
+    @ResponseBody
+    public TableInfo list(${ClassName} ${className}) {
+        initQuery(${className}, new Page());
+        List<${ClassName}> list = ${className}Service.select${ClassName}List(query);
+        return initTableInfo(list, query);
+    }
+#end
+
+    /**
+     * 导出${functionName}列表
+     */
+    @SuppressWarnings("unchecked")
+    @RequiresPermissions("${permissionPrefix}:export")
+    @GetMapping("/export")
+    @ResponseBody
+    public JsonResult export(${ClassName} ${className}) {
+    	initQuery(${className});
+        List<${ClassName}> list = ${className}Service.select${ClassName}List(query);
+        ExcelUtils<${ClassName}> util = new ExcelUtils<${ClassName}>(${ClassName}.class);
+        return util.exportExcel(list, "${functionName}");
+    }
+
+#if($table.crud)
+    /**
+     * 新增${functionName}
+     */
+    @FormToken
+    @GetMapping("/add")
+    public String add() {
+        return prefix + "/add";
+    }
+#elseif($table.tree)
+    /**
+     * 新增${functionName}
+     */
+    @FormToken
+    @GetMapping("/add/{parentId}")
+    public String add(@PathVariable("parentId") String parentId, ModelMap modelMap) {
+        modelMap.put("${className}", ${className}Service.select${ClassName}ById(parentId));
+        return prefix + "/add";
+    }
+#end
+
+    /**
+     * 新增保存${functionName}
+     */
+    @FormToken(TokenType.DESTROY)
+    @RequiresPermissions("${permissionPrefix}:add")
+    @Log(title = "${functionName}", businessType = BusinessType.INSERT)
+    @PostMapping("/add")
+    @ResponseBody
+    public JsonResult addSave(${ClassName} ${className}) {
+        ${className}Service.insert${ClassName}(${className});
+        return JsonResult.success();
+    }
+
+    /**
+     * 修改${functionName}
+     */
+    @GetMapping("/edit/{${pkColumn.javaField}}")
+    public String edit(@PathVariable("${pkColumn.javaField}") ${pkColumn.columnType} ${pkColumn.javaField}, ModelMap modelMap) {
+        ${ClassName} ${className} = ${className}Service.select${ClassName}ById(${pkColumn.javaField});
+        modelMap.put("${className}", ${className});
+        #if($table.tree)
+        #set($TreeParentCode=$treeParentCode.substring(0,1).toUpperCase() + ${treeParentCode.substring(1)})
+        ${ClassName} parent = ${className}Service.select${ClassName}ById(${className}.get${TreeParentCode}());
+        modelMap.put("parent", parent);
+        #end
+        return prefix + "/edit";
+    }
+
+    /**
+     * 修改保存${functionName}
+     */
+    @RequiresPermissions("${permissionPrefix}:edit")
+    @Log(title = "${functionName}", businessType = BusinessType.UPDATE)
+    @PostMapping("/edit")
+    @ResponseBody
+    public JsonResult editSave(${ClassName} ${className}) {
+        ${className}Service.update${ClassName}(${className});
+        return JsonResult.success();
+    }
+
+#if($table.crud)
+    /**
+     * 删除${functionName}
+     */
+    @RequiresPermissions("${permissionPrefix}:remove")
+    @Log(title = "${functionName}", businessType = BusinessType.DELETE)
+    @PostMapping( "/remove")
+    @ResponseBody
+    public JsonResult remove(String ids) {
+        ${className}Service.delete${ClassName}ByIds(Convert.toStrArray(ids));
+        return JsonResult.success();
+    }
+#elseif($table.tree)
+    /**
+     * 删除
+     */
+    @RequiresPermissions("${permissionPrefix}:remove")
+    @Log(title = "${functionName}", businessType = BusinessType.DELETE)
+    @GetMapping("/remove/{${pkColumn.javaField}}")
+    @ResponseBody
+    public JsonResult remove(@PathVariable("${pkColumn.javaField}") ${pkColumn.columnType} ${pkColumn.javaField}) {
+        ${className}Service.delete${ClassName}ById(${pkColumn.javaField});
+        return JsonResult.success();
+    }
+#end
+#if($table.tree)
+
+    /**
+     * 选择${functionName}树
+     */
+#set($BusinessName=$businessName.substring(0,1).toUpperCase() + ${businessName.substring(1)})
+    @GetMapping("tree/{${pkColumn.javaField}}")
+    public String tree(@PathVariable(value = "${pkColumn.javaField}") String ${pkColumn.javaField}, ModelMap modelMap) {
+        modelMap.put("${className}", ${className}Service.select${ClassName}ById(${pkColumn.javaField}));
+        return prefix + "/tree";
+    }
+
+    /**
+     * 加载${functionName}树列表
+     */
+    @SuppressWarnings("unchecked")
+    @GetMapping("/treeData")
+    @ResponseBody
+    public List<Ztree> treeData(${ClassName} ${className}) {
+        initQuery(${className});
+		List<Ztree> ztrees = ${className}Service.${className}TreeData(query);
+		return ztrees;
+    }
+#end
+}

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="053403c7-fea3-475d-9d00-5fd6f630b752" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/daffodil-flowable/src/main/resources/application-flowable.properties" beforeDir="false" afterPath="$PROJECT_DIR$/daffodil-flowable/src/main/resources/application-flowable.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/daffodil-starter/src/main/java/com/daffodil/DaffodilApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/daffodil-starter/src/main/java/com/daffodil/DaffodilApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/daffodil-starter/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/daffodil-starter/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/daffodil-system/src/main/resources/application-system.properties" beforeDir="false" afterPath="$PROJECT_DIR$/daffodil-system/src/main/resources/application-system.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/daffodil-system/src/main/resources/dump-daffodil-202007111610.sql" beforeDir="false" afterPath="$PROJECT_DIR$/daffodil-system/src/main/resources/dump-daffodil-202007111610.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/daffodil-system/src/main/resources/static/css/system-ui.css" beforeDir="false" afterPath="$PROJECT_DIR$/daffodil-system/src/main/resources/static/css/system-ui.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/daffodil-system/src/main/resources/static/img/favicon.ico" beforeDir="false" afterPath="$PROJECT_DIR$/daffodil-system/src/main/resources/static/img/favicon.ico" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/daffodil-system/src/main/resources/static/img/skin-blue.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/daffodil-system/src/main/resources/static/img/skin-blue.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/daffodil-system/src/main/resources/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/daffodil-system/src/main/resources/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/daffodil-system/src/main/resources/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/daffodil-system/src/main/resources/templates/login.html" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="F:\maven\maven-repository" />
+        <option name="mavenHome" value="F:/maven/apache-maven-3.6.3" />
+        <option name="userSettingsFile" value="C:\Users\Administrator\.m2\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="1" />
+  </component>
+  <component name="ProjectId" id="1fOFIgSpDTjJxNWbbrExGAEnPg3" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/daffodil-system/src/main/resources/static/img" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
+  </component>
+  <component name="RebelAgentSelection">
+    <selection>jr</selection>
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\spring cloud\daffodil\daffodil-system\src\main\resources\static\img" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="DaffodilApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="daffodil-starter" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.daffodil.DaffodilApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="053403c7-fea3-475d-9d00-5fd6f630b752" name="Default Changelist" comment="" />
+      <created>1596081153650</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1596081153650</updated>
+      <workItem from="1596081157256" duration="9560000" />
+      <workItem from="1596115384878" duration="2849000" />
+      <workItem from="1596118251693" duration="89000" />
+      <workItem from="1596118350313" duration="542000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1028" y="321" key="FileChooserDialogImpl" timestamp="1596110424502">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1028" y="321" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1596110424502" />
+    <state width="948" height="148" key="GridCell.Tab.0.bottom" timestamp="1596118557828">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="948" height="148" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1596118557828" />
+    <state width="948" height="148" key="GridCell.Tab.0.center" timestamp="1596118557828">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="948" height="148" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1596118557828" />
+    <state width="948" height="148" key="GridCell.Tab.0.left" timestamp="1596118557828">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="948" height="148" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1596118557828" />
+    <state width="948" height="148" key="GridCell.Tab.0.right" timestamp="1596118557828">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="948" height="148" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1596118557828" />
+    <state width="948" height="148" key="GridCell.Tab.1.bottom" timestamp="1596118557828">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="948" height="148" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1596118557828" />
+    <state width="948" height="148" key="GridCell.Tab.1.center" timestamp="1596118557828">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="948" height="148" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1596118557828" />
+    <state width="948" height="148" key="GridCell.Tab.1.left" timestamp="1596118557828">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="948" height="148" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1596118557828" />
+    <state width="948" height="148" key="GridCell.Tab.1.right" timestamp="1596118557828">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="948" height="148" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1596118557828" />
+    <state x="917" y="216" key="SettingsEditor" timestamp="1596081357703">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="917" y="216" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1596081357703" />
+    <state x="663" y="161" width="1053" height="653" key="find.popup" timestamp="1596118165803">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="663" y="161" width="1053" height="653" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1596118165803" />
+  </component>
+</project>

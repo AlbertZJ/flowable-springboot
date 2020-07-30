@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('提交下一步')" />
+	<th:block th:include="include :: bootstrap-duallistbox-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+    	<form class="form-horizontal m" id="form-flow-submit">
+    		<input id="businessKey" name="businessKey" th:value="${businessKey}"  type="hidden">
+    		<div class="form-group">
+                <label class="col-sm-2 control-label">当前环节：</label>
+                <div class="col-sm-10">
+                    <input id="currentNode" th:value="${currentNode.name}" class="form-control" type="text" readonly="readonly">
+                </div>
+            </div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">流转操作：</label>
+				<div class="col-sm-10">
+					<div class="ibox-radiobox">
+						<div class="radio-box" th:each="handle : ${handles}">
+							<input type="radio" name="handleId" th:id="${handle.id}" th:value="${handle.id}" th:checked="${handleStat.index == 0}" required="required">
+							<label th:for="${handle.id}" th:text="${(handle.name == null || handle.name == '') ? '提交' : handle.name}"></label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-12" id="select-next-excute-user"></div>
+			</div>
+			<div class="form-group" th:if="${currentNode.assignee != '$INITIATOR'}"><!-- 流程发起人不需要填写意见 -->
+				<div class="col-sm-12">
+            		<textarea name="message" minlength="2" maxlength="250" required="required" class="form-control" placeholder="请输入办理意见（2 ~ 250个字符）" rows="3"></textarea>
+            	</div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: bootstrap-duallistbox-js" />
+	<script type="text/javascript">
+		$("#form-flow-submit").validate({
+			focusCleanup : true
+		});
+	
+		$('input[type="radio"]').on('ifChecked', function(event) {
+			var handleId = $(event.target).val();
+			var businessKey = $("#businessKey").val();
+			initNextFlowNodes(businessKey, handleId);
+		});
+		
+		$(function(){
+			var handleId = $('input[name="handleId"]:checked').val();
+			var businessKey = $("#businessKey").val();
+			initNextFlowNodes(businessKey, handleId);
+		});
+		
+		function initNextFlowNodes(businessKey, handleId){
+			var url = ctx + "flowable/task/nextFlowNodes/" + businessKey + "/" + handleId;
+			$.ajax({
+				url : url,
+				type : 'get',
+				dataType : 'json',
+				success : function(res) {
+					if (res.code == 0 && res.data && res.data.length > 0) {
+						$('#select-next-excute-user').empty();
+						var $div = $('#select-next-excute-user');
+						var $ul = $('<ul class="nav nav-tabs" role="tablist"></ul>');
+						var $tab = $('<div class="tab-content"></div>');
+						for(var i = 0; i < res.data.length; i++){
+							if(res.data[i].outgoingFlows && res.data[i].outgoingFlows.length == 0){//没有出口的流程节点，是流程结束节点。
+								$div.append('<label class="col-sm-2 control-label">下一环节：</label>');
+				                $div.append('<div class="col-sm-10"><input value="' + res.data[i].name + '" class="form-control" type="text" readonly="readonly"></div>');
+				                $div.append('<input type="hidden" name="nodeIds" value="">');
+				                $div.append('<input type="hidden" name="userIds" value="">');
+							}else {
+								$ul.append('<li role="presentation" class="' + (i == 0 ? 'active' : '') + '"><a href="#node' + i + '" ' 
+									+ ' aria-controls="node' + i + '" role="tab" data-toggle="tab">' + res.data[i].name + '</a></li>');
+								var tabpanel = $('#tabpanelTpl').tmpl({'index' : i, 'nodeId' : res.data[i].id}).html();
+								$tab.append(tabpanel);
+								$div.empty();
+								$div.append($ul).append($tab);
+								initNextAssignee(businessKey, handleId, res.data[i].id, i);
+							}
+						}
+					} else{
+						$('#select-next-excute-user').empty();
+					}
+				}
+			});
+		}
+		
+		function initNextAssignee(businessKey, handleId, nodeId, index){
+			var url = ctx + "flowable/task/nextAssignee/" + businessKey + "/" + handleId + "/" + nodeId;
+			$.ajax({
+				url : url,
+				type : 'get',
+				dataType : 'json',
+				success : function(res) {
+					if (res.code == 0 && res.data && res.data.length > 0) {
+						$('#user-select-' + index).empty();
+						var selector = $('#user-select-' + index)[0];
+						$(res.data).each(function() {
+							var o = document.createElement("option");
+							o.value = this.loginName;
+							o.text = this.loginName + " : " + this.userName;
+							if (typeof (selector) != "undefined") {
+								selector.options.add(o);
+							}
+						});
+						var dualListbox = $('#user-select-' + index).bootstrapDualListbox({
+							nonSelectedListLabel : '待选择用户',
+							selectedListLabel : '已选择用户',
+							preserveSelectionOnMove : 'moved',
+							moveOnSelect : false, // 出现一个剪头，表示可以一次选择一个
+							filterTextClear : '展示所有',
+							moveSelectedLabel : "添加",
+							moveAllLabel : '添加所有',
+							removeSelectedLabel : "移除",
+							removeAllLabel : '移除所有',
+							infoText : '共{0}项',
+							infoTextFiltered : '从{1}项中筛选{0}项',
+							infoTextEmpty : '没有选项',
+							showFilterInputs : true, // 是否带搜索
+							selectorMinimalHeight : 160
+						});
+						dualListbox.bootstrapDualListbox('refresh');
+					}
+				}
+			});
+		}
+	
+		function submitHandler() {
+			if ($.validate.form()) {
+				$.operate.save(ctx + "flowable/task/submit", $('#form-flow-submit').serialize());
+			}
+		}
+	</script>
+</body>
+<script id="tabpanelTpl" type="text/template">
+<tmpl>
+<div role="tabpanel" class="tab-pane ${index == 0 ? 'active' : ''}" id="node${index}">
+	<div class="form-group">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-title">
+					<p>选择下一环节办理人员</p>
+				</div>
+				<div class="ibox-content col-sm-12">
+					<input type="hidden" name="nodeIds" value="${nodeId}">
+					<select class="form-control user-select" id="user-select-${index}" name="userIds" single="single"></select><!-- multiple:多选，single:单选 -->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</tmpl>
+</script>
+</html>

@@ -1,0 +1,189 @@
+package ${packageName}.service.impl;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.daffodil.core.entity.Query;
+import com.daffodil.core.dao.JpaDao;
+import com.daffodil.util.HqlUtils;
+import com.daffodil.framework.shiro.util.ShiroUtils;
+import ${packageName}.entity.${ClassName};
+import ${packageName}.service.I${ClassName}Service;
+#if($table.tree)
+import com.daffodil.core.entity.Ztree;
+import com.daffodil.core.constant.Constants;
+import com.daffodil.util.StringUtils;
+#end
+
+/**
+ * ${functionName}接口业务实现层
+ * 
+ * @author ${author}
+ * @date ${datetime}
+ * @version 1.0
+ */
+@Service
+public class ${ClassName}ServiceImpl implements I${ClassName}Service {
+
+    @Autowired
+	private JpaDao jpaDao;
+	
+#if($table.crud)
+    @Override
+    public ${ClassName} select${ClassName}ById(${pkColumn.columnType} ${pkColumn.javaField}) {
+        return jpaDao.find(${ClassName}.class, ${pkColumn.javaField});
+    }
+
+    @Override
+    public List<${ClassName}> select${ClassName}List(Query<${ClassName}> query) {
+        StringBuffer hql = new StringBuffer("from ${ClassName} where 1=1 ");
+		List<Object> paras = new ArrayList<Object>();
+		HqlUtils.createHql(hql, paras, query);
+		return jpaDao.search(hql.toString(), paras, ${ClassName}.class, query.getPage());
+    }
+
+    @Override
+    @Transactional
+    public void insert${ClassName}(${ClassName} ${className}) {
+#foreach ($column in $columns)
+#if($column.javaField == 'createTime')
+        ${className}.setCreateBy(ShiroUtils.getLoginName());
+        ${className}.setCreateTime(new Date());
+#end
+#end
+        jpaDao.save(${className});
+    }
+
+    @Override
+    @Transactional
+    public void update${ClassName}(${ClassName} ${className}) {
+#foreach ($column in $columns)
+#if($column.javaField == 'createTime')
+        ${className}.setUpdateBy(ShiroUtils.getLoginName());
+        ${className}.setUpdateTime(new Date());
+#end
+#end
+        jpaDao.update(${className});
+    }
+
+    @Override
+    @Transactional
+    public void delete${ClassName}ByIds(String[] ids) {
+        jpaDao.delete(${ClassName}.class, ids);
+    }
+
+#end    
+
+#if($table.tree)
+#set($TreeCode=$treeCode.substring(0,1).toUpperCase() + ${treeCode.substring(1)})
+#set($TreeParentCode=$treeParentCode.substring(0,1).toUpperCase() + ${treeParentCode.substring(1)})
+#set($TreeName=$treeName.substring(0,1).toUpperCase() + ${treeName.substring(1)})
+    @Override
+    public ${ClassName} select${ClassName}ById(${pkColumn.columnType} ${pkColumn.javaField}) {
+        if(Constants.ROOT.equals(${pkColumn.javaField})){
+            ${ClassName} ${className} = new ${ClassName}();
+            ${className}.set${TreeCode}(Constants.ROOT);
+            ${className}.set${TreeName}("");
+            ${className}.setAncestors("");
+            return ${className};
+        }
+        return jpaDao.find(${ClassName}.class, ${pkColumn.javaField});
+    }
+
+    @Override
+    public List<${ClassName}> select${ClassName}List(Query<${ClassName}> query) {
+        StringBuffer hql = new StringBuffer("from ${ClassName} where 1=1 ");
+		List<Object> paras = new ArrayList<Object>();
+		HqlUtils.createHql(hql, paras, query);
+		return jpaDao.search(hql.toString(), paras, ${ClassName}.class);
+    }
+
+    @Override
+    @Transactional
+    public void insert${ClassName}(${ClassName} ${className}) {
+        if(Constants.ROOT.equals(${className}.get${TreeParentCode}())){
+            ${className}.setAncestors("root");
+        }else{
+            ${ClassName} parent = jpaDao.find(${ClassName}.class, ${className}.get${TreeParentCode}());
+            if(parent != null){
+                ${className}.setAncestors(parent.getAncestors() + "," + parent.get${TreeCode}());
+            }
+        }
+#foreach ($column in $columns)
+#if($column.javaField == 'createTime')
+        ${className}.setCreateBy(ShiroUtils.getLoginName());
+        ${className}.setCreateTime(new Date());
+#end
+#end
+        jpaDao.save(${className});
+    }
+
+    @Override
+    @Transactional
+    public void update${ClassName}(${ClassName} ${className}) {
+        ${ClassName} ${className}2 = this.select${ClassName}ById(${className}.get${TreeCode}());
+        ${ClassName} parent = this.select${ClassName}ById(${className}.get${TreeParentCode}());
+        if (StringUtils.isNotNull(parent) && StringUtils.isNotNull(${className}2)) {
+            String newAncestors = parent.getAncestors() + "," + parent.get${TreeCode}();
+            String oldAncestors = ${className}2.getAncestors();
+            ${className}.setAncestors(newAncestors);
+            this.updateChildren${ClassName}(${className}, newAncestors, oldAncestors);
+        }
+#foreach ($column in $columns)
+#if($column.javaField == 'createTime')
+        ${className}.setUpdateBy(ShiroUtils.getLoginName());
+        ${className}.setUpdateTime(new Date());
+#end
+#end
+        jpaDao.update(${className});
+    }
+    	
+    @Transactional
+    public void delete${ClassName}ById(${pkColumn.columnType} ${pkColumn.javaField}) {
+        jpaDao.delete(${ClassName}.class, ${pkColumn.javaField});
+    }
+    
+    @Override
+    public List<Ztree> ${className}TreeData(Query<${ClassName}> query) {
+        List<${ClassName}> ${className}s = this.select${ClassName}List(query);
+        List<Ztree> ztrees = this.initZtree(${className}s);
+        return ztrees;
+    }
+    
+    /**
+     * 初始化zTree
+     * @param ${className}s
+     * @return
+     */
+    private List<Ztree> initZtree(List<${ClassName}> ${className}s) {
+        List<Ztree> ztrees = new ArrayList<Ztree>();
+        for (${ClassName} ${className} : ${className}s) {
+            Ztree ztree = new Ztree();
+            ztree.setId(${className}.get${TreeCode}());
+            ztree.setpId(${className}.get${TreeParentCode}());
+            ztree.setName(${className}.get${TreeName}());
+            ztree.setTitle(${className}.get${TreeName}());
+            ztrees.add(ztree);
+        }
+        return ztrees;
+    }
+    
+    @Transactional
+    public void updateChildren${ClassName}(${ClassName} ${className}, String newAncestors, String oldAncestors) {
+        //查询旧的前缀的所有子节点
+        List<${ClassName}> childrens = jpaDao.search("from ${ClassName} where ancestors like ?", "%" + ${className}.getId() + "%", ${ClassName}.class);
+        for (${ClassName} child : childrens) {
+            //替换掉所有子节点的前缀
+            child.setAncestors(child.getAncestors().replace(oldAncestors, newAncestors));
+            //父节点状态改变，子节点也变更--实际功能需求实际变更
+            //child.setStatus(${className}.getStatus());
+            jpaDao.update(child);
+        }
+    }
+#end
+}

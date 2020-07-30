@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('任务管理列表')" />
+</head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="task-form">
+					<div class="select-list">
+						<ul>
+							<li>
+								任务名称：<input type="text" name="name"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-default btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm" id="toolbar" role="group">
+		        <a class="btn btn-primary single disabled" onclick="submitTask()" shiro:hasPermission="flowable:task:edit">
+		            <i class="fa fa-check-square-o"></i> [[${type == '3' ? '办理' : '查看'}]]
+		        </a>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+	            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+	        </div>
+    	</div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:src="@{/flowable/callback.js}"></script><!-- 流程业务回调方法集合js -->
+    <script th:inline="javascript">
+        var prefix = ctx + "flowable/task";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list/" + [[${type}]],
+                modalName: "任务",
+                columns: [{
+		            checkbox: true
+		        },
+		        {
+		            field: 'id',
+		            visible: false
+		        },
+				{
+					field : 'name', 
+					title : '任务名称' 
+				},
+				{
+					field : 'processName', 
+					title : '流程名称' 
+				},
+				{
+					field : 'processKey', 
+					title : '流程标识' 
+				},
+				{
+					field : 'processVersion', 
+					title : '流程版本',
+					formatter: function(value, row, index){
+						return '<span class="badge badge-info">V.' + (value ? value : 0) + '</span>';
+					}
+				},
+		        {
+					field : 'startUserId', 
+					title : '发起人' 
+				},
+				{
+		            field: 'startTime',
+		            title: '创建时间',
+		        },
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	return $('#operateTpl').tmpl(row).html();
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+        
+        function detail(id) {
+        	var options = {
+  				title: '流程日志详情',
+  				url: prefix + "/detail/" + id,
+  				skin: 'layui-layer-gray', 
+  				btn: ['关闭'],
+  				yes: function (index, layero) {
+  	                layer.close(index);
+               }
+  			};
+       		$.modal.openOptions(options);
+        }
+        
+        function diagram(id) {
+        	var options = {
+   				title: '流程图详情',
+   				url: prefix + "/image/" + id,
+   				skin: 'layui-layer-gray', 
+   				btn: ['关闭'],
+   				yes: function (index, layero) {
+   	                layer.close(index);
+                }
+   			};
+        	$.modal.openOptions(options);
+        }
+        
+        function submitTask(id, callbackId){
+        	var id = $.common.isEmpty(id) ? $.table.selectColumns('businessKey') : id;
+    	    if (id.length == 0) {
+    			$.modal.alertWarning("请至少选择一条记录");
+    			return;
+    		}
+    		var datas = $.table.selectDatasByColumn('businessKey', id);
+    		if(datas && datas[0]){
+    			var callbackId = datas[0].callbackId;
+    			if(typeof FLOWABLE_CALLBACK[callbackId] == 'function'){
+	    			FLOWABLE_CALLBACK[callbackId](datas[0]);
+	    		}
+    		}
+        }
+    </script>
+</body>
+<!-- 表格操作列 -->
+<script id="operateTpl" type="text/template">
+<tmpl>
+	<a href="javascript:diagram('${businessKey}')" shiro:hasPermission="flowable:task:image" class="btn btn-primary btn-xs">
+		<i class="fa fa-search"></i> 流程图
+	</a>
+	<a href="javascript:detail('${businessKey}')" shiro:hasPermission="flowable:task:detail" class="btn btn-primary btn-xs">
+		<i class="fa fa-list"></i> 流程记录
+	</a> 
+	<a href="javascript:submitTask('${businessKey}')" shiro:hasPermission="flowable:task:edit" class="btn btn-primary btn-xs">
+		<i class="fa fa-check-square-o"></i> [[${type == '3' ? '办理' : '查看'}]]
+	</a>
+</tmpl>
+</script>
+</html>

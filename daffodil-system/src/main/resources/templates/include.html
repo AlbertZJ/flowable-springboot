@@ -1,0 +1,271 @@
+<!-- 通用CSS -->
+<head th:fragment=header(title)>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+	<title th:text="${title}"></title>
+	<link rel="shortcut icon" href="favicon.ico">
+	<link th:href="@{/ajax/libs/layui/css/layui.css}" rel="stylesheet"/>
+	<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+	<link th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+	<link th:href="@{/ajax/libs/bootstrap-table/bootstrap-table.min.css}" rel="stylesheet"/>
+	<link th:href="@{/css/animate.css}" rel="stylesheet"/>
+	<link th:href="@{/css/style.css}" rel="stylesheet"/>
+	<link th:href="@{'/css/theme/skin/' + ${@config.getKey('sys.index.skinName')} + '.css'}" rel="stylesheet"/>
+	<link th:href="@{/css/system-ui.css}" rel="stylesheet"/>
+</head>
+
+<!-- 通用JS -->
+<div th:fragment="footer">
+	<script th:src="@{/js/jquery.min.js}"></script>
+	<script th:src="@{/js/jquery.tmpl.js}"></script>
+	<script th:src="@{/js/bootstrap.min.js}"></script>
+	<!-- bootstrap-table 表格插件 -->
+	<script th:src="@{/ajax/libs/bootstrap-table/bootstrap-table.min.js}"></script>
+	<script th:src="@{/ajax/libs/bootstrap-table/locale/bootstrap-table-zh-CN.min.js}"></script>
+	<script th:src="@{/ajax/libs/bootstrap-table/extensions/mobile/bootstrap-table-mobile.js}"></script>
+	<script th:src="@{/ajax/libs/bootstrap-table/extensions/toolbar/bootstrap-table-toolbar.min.js}"></script>
+	<script th:src="@{/ajax/libs/bootstrap-table/extensions/columns/bootstrap-table-fixed-columns.js}"></script>
+	<!-- jquery-validate 表单验证插件 -->
+	<script th:src="@{/ajax/libs/validate/jquery.validate.min.js}"></script>
+	<script th:src="@{/ajax/libs/validate/messages_zh.min.js}"></script>
+	<script th:src="@{/ajax/libs/validate/jquery.validate.extend.js}"></script>
+	<!-- jquery-validate 表单树插件 -->
+	<script th:src="@{/ajax/libs/bootstrap-treetable/bootstrap-treetable.js}"></script>
+	<!-- jquery-export 表格导出插件 -->
+	<script th:src="@{/ajax/libs/bootstrap-table/extensions/export/bootstrap-table-export.js}"></script>
+	<script th:src="@{/ajax/libs/bootstrap-table/extensions/export/tableExport.js}"></script>
+	<!-- 遮罩层 -->
+	<script th:src="@{/ajax/libs/blockUI/jquery.blockUI.js}"></script>
+    <script th:src="@{/ajax/libs/iCheck/icheck.min.js}"></script>
+	<script th:src="@{/ajax/libs/layer/layer.min.js}"></script>
+	<script th:src="@{/ajax/libs/layui/layui.js}"></script>
+	<script th:src="@{/js/system-ui.js}"></script>
+	<script th:src="@{/js/common.js}"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; </script>
+</div>
+
+<!-- ztree树插件 -->
+<div th:fragment="ztree-css">
+    <link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+</div>
+<div th:fragment="ztree-js">
+    <script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+</div>
+
+<!-- select2下拉框插件 -->
+<div th:fragment="select2-css">
+    <link th:href="@{/ajax/libs/select2/select2.min.css}" rel="stylesheet"/>
+    <link th:href="@{/ajax/libs/select2/select2-bootstrap.css}" rel="stylesheet"/>
+</div>
+<div th:fragment="select2-js">
+    <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
+</div>
+
+<!-- bootstrap-select下拉框插件 -->
+<div th:fragment="bootstrap-select-css">
+    <link th:href="@{/ajax/libs/bootstrap-select/bootstrap-select.css}" rel="stylesheet"/>
+</div>
+<div th:fragment="bootstrap-select-js">
+    <script th:src="@{/ajax/libs/bootstrap-select/bootstrap-select.js}"></script>
+</div>
+
+<!-- datetimepicker日期和时间插件 -->
+<div th:fragment="datetimepicker-css">
+    <link th:href="@{/ajax/libs/datapicker/bootstrap-datetimepicker.min.css}" rel="stylesheet"/>
+</div>
+<div th:fragment="datetimepicker-js">
+    <script th:src="@{/ajax/libs//datapicker/bootstrap-datetimepicker.min.js}"></script>
+</div>
+
+<!-- ui布局插件 -->
+<div th:fragment="layout-latest-css">
+    <link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+</div>
+<div th:fragment="layout-latest-js">
+    <script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+</div>
+
+<!-- summernote富文本编辑器插件 -->
+<div th:fragment="summernote-css">
+    <link th:href="@{/ajax/libs/summernote/summernote.css}" rel="stylesheet"/>
+	<link th:href="@{/ajax/libs/summernote/summernote-bs3.css}" rel="stylesheet"/>
+</div>
+<div th:fragment="summernote-js">
+    <script th:src="@{/ajax/libs/summernote/summernote.min.js}"></script>
+	<script th:src="@{/ajax/libs/summernote/summernote-zh-CN.js}"></script>
+</div>
+
+<!-- cropbox图像裁剪插件 -->
+<div th:fragment="cropbox-css">
+    <link th:href="@{/ajax/libs/cropbox/cropbox.css}" rel="stylesheet"/>
+</div>
+<div th:fragment="cropbox-js">
+    <script th:src="@{/ajax/libs/cropbox/cropbox.js}"></script>
+</div>
+
+<!-- jasny功能扩展插件 -->
+<div th:fragment="jasny-bootstrap-css">
+    <link th:href="@{/ajax/libs/jasny/jasny-bootstrap.min.css}" rel="stylesheet"/>
+</div>
+<div th:fragment="jasny-bootstrap-js">
+    <script th:src="@{/ajax/libs/jasny/jasny-bootstrap.min.js}"></script>
+</div>
+
+<!-- fileinput文件上传插件 -->
+<div th:fragment="bootstrap-fileinput-css">
+    <link th:href="@{/ajax/libs/bootstrap-fileinput/fileinput.min.css}" rel="stylesheet"/>
+</div>
+<div th:fragment="bootstrap-fileinput-js">
+    <script th:src="@{/ajax/libs/bootstrap-fileinput/fileinput.min.js}"></script>
+</div>
+
+<!-- duallistbox双列表框插件 -->
+<div th:fragment="bootstrap-duallistbox-css">
+    <link th:href="@{/ajax/libs/duallistbox/bootstrap-duallistbox.min.css}" rel="stylesheet"/>
+</div>
+<div th:fragment="bootstrap-duallistbox-js">
+    <script th:src="@{/ajax/libs/duallistbox/bootstrap-duallistbox.min.js}"></script>
+</div>
+
+<!-- suggest搜索自动补全 -->
+<div th:fragment="bootstrap-suggest-js">
+    <script th:src="@{/ajax/libs/suggest/bootstrap-suggest.min.js}"></script>
+</div>
+
+<!-- typeahead搜索自动补全 -->
+<div th:fragment="bootstrap-typeahead-js">
+    <script th:src="@{/ajax/libs/typeahead/bootstrap3-typeahead.min.js}"></script>
+</div>
+
+<!-- jsonview格式化和语法高亮JSON格式数据查看插件 -->
+<div th:fragment="jsonview-css">
+    <link th:href="@{/ajax/libs/jsonview/jquery.jsonview.css}" rel="stylesheet"/>
+</div>
+<div th:fragment="jsonview-js">
+    <script th:src="@{/ajax/libs/jsonview/jquery.jsonview.js}"></script>
+</div>
+
+<!-- jquery.steps表单向导插件 -->
+<div th:fragment="jquery-steps-css">
+    <link th:href="@{/ajax/libs/staps/jquery.steps.css}" rel="stylesheet"/>
+</div>
+<div th:fragment="jquery-steps-js">
+    <script th:src="@{/ajax/libs/staps/jquery.steps.min.js}"></script>
+</div>
+
+<!-- ECharts百度统计图表插件 -->
+<div th:fragment="echarts-js">
+    <script th:src="@{/ajax/libs/report/echarts/echarts-all.js}"></script>
+</div>
+
+<!-- peity图表组合插件 -->
+<div th:fragment="peity-js">
+    <script th:src="@{/ajax/libs/report/peity/jquery.peity.min.js}"></script>
+</div>
+
+<!-- sparkline线状图插件 -->
+<div th:fragment="sparkline-js">
+    <script th:src="@{/ajax/libs/report/sparkline/jquery.sparkline.min.js}"></script>
+</div>
+
+<!-- 表格拖拽插件 -->
+<div th:fragment="bootstrap-table-reorder-js">
+	<script th:src="@{/ajax/libs/bootstrap-table/extensions/reorder/bootstrap-table-reorder.js}"></script>
+	<script th:src="@{/ajax/libs/bootstrap-table/extensions/reorder/jquery.tablednd.js}"></script>
+</div>
+
+<!-- 颜色取色器插件 -->
+<div th:fragment="colpick-js">
+	<script th:src="@{/ajax/libs/colpick/js/colpick.js}"></script>
+</div>
+<div th:fragment="colpick-css">
+    <link th:href="@{/ajax/libs/colpick/css/colpick.css}" rel="stylesheet"/>
+</div>
+
+<div th:fragment="system-demo">
+	<li>
+		<a href="#"><i class="fa fa-desktop"></i><span class="nav-label">实例演示</span><span class="fa arrow"></span></a>
+		<ul class="nav nav-second-level collapse">
+			<li><a>表单<span class="fa arrow"></span></a>
+				<ul class="nav nav-third-level">
+					<li><a class="menuItem" th:href="@{/demo/form/button}">按钮</a></li>
+					<li><a class="menuItem" th:href="@{/demo/form/grid}">栅格</a></li>
+					<li><a class="menuItem" th:href="@{/demo/form/select}">下拉框</a></li>
+					<li><a class="menuItem" th:href="@{/demo/form/basic}">基本表单</a></li>
+					<li><a class="menuItem" th:href="@{/demo/form/cards}">卡片列表</a></li>
+					<li><a class="menuItem" th:href="@{/demo/form/jasny}">功能扩展</a></li>
+					<li><a class="menuItem" th:href="@{/demo/form/sortable}">拖动排序</a></li>
+					<li><a class="menuItem" th:href="@{/demo/form/tabs_panels}">选项卡 & 面板</a></li>
+					<li><a class="menuItem" th:href="@{/demo/form/validate}">表单校验</a></li>
+					<li><a class="menuItem" th:href="@{/demo/form/wizard}">表单向导</a></li>
+					<li><a class="menuItem" th:href="@{/demo/form/upload}">文件上传</a></li>
+					<li><a class="menuItem" th:href="@{/demo/form/datetime}">日期和时间</a></li>
+					<li><a class="menuItem" th:href="@{/demo/form/summernote}">富文本编辑器</a></li>
+					<li><a class="menuItem" th:href="@{/demo/form/duallistbox}">左右互选组件</a></li>
+					<li><a class="menuItem" th:href="@{/demo/form/autocomplete}">搜索自动补全</a></li>
+				</ul>
+			</li>
+			<li><a>表格<span class="fa arrow"></span></a>
+				<ul class="nav nav-third-level">
+					<li><a class="menuItem" th:href="@{/demo/table/search}">查询条件</a></li>
+					<li><a class="menuItem" th:href="@{/demo/table/footer}">数据汇总</a></li>
+					<li><a class="menuItem" th:href="@{/demo/table/groupHeader}">组合表头</a></li>
+					<li><a class="menuItem" th:href="@{/demo/table/export}">表格导出</a></li>
+					<li><a class="menuItem" th:href="@{/demo/table/remember}">翻页记住选择</a></li>
+					<li><a class="menuItem" th:href="@{/demo/table/pageGo}">跳转至指定页</a></li>
+					<li><a class="menuItem" th:href="@{/demo/table/params}">自定义查询参数</a></li>
+					<li><a class="menuItem" th:href="@{/demo/table/multi}">初始多表格</a></li>
+					<li><a class="menuItem" th:href="@{/demo/table/button}">点击按钮加载表格</a></li>
+					<li><a class="menuItem" th:href="@{/demo/table/fixedColumns}">表格冻结列</a></li>
+					<li><a class="menuItem" th:href="@{/demo/table/event}">自定义触发事件</a></li>
+					<li><a class="menuItem" th:href="@{/demo/table/detail}">表格细节视图</a></li>
+					<li><a class="menuItem" th:href="@{/demo/table/image}">表格图片预览</a></li>
+					<li><a class="menuItem" th:href="@{/demo/table/curd}">动态增删改查</a></li>
+					<li><a class="menuItem" th:href="@{/demo/table/reorder}">表格拖拽操作</a></li>
+					<li><a class="menuItem" th:href="@{/demo/table/other}">表格其他操作</a></li>
+				</ul>
+			</li>
+			<li><a>弹框<span class="fa arrow"></span></a>
+				<ul class="nav nav-third-level">
+					<li><a class="menuItem" th:href="@{/demo/modal/dialog}">模态窗口</a></li>
+					<li><a class="menuItem" th:href="@{/demo/modal/layer}">弹层组件</a></li>
+					<li><a class="menuItem" th:href="@{/demo/modal/table}">弹层表格</a></li>
+				</ul>
+			</li>
+			<li><a>操作<span class="fa arrow"></span></a>
+				<ul class="nav nav-third-level">
+					<li><a class="menuItem" th:href="@{/demo/operate/table}">表格</a></li>
+					<li><a class="menuItem" th:href="@{/demo/operate/other}">其他</a></li>
+				</ul>
+			</li>
+			<li><a>报表<span class="fa arrow"></span></a>
+				<ul class="nav nav-third-level">
+					<li><a class="menuItem" th:href="@{/demo/report/echarts}">百度ECharts</a></li>
+					<li><a class="menuItem" th:href="@{/demo/report/peity}">peity</a></li>
+					<li><a class="menuItem" th:href="@{/demo/report/sparkline}">sparkline</a></li>
+					<li><a class="menuItem" th:href="@{/demo/report/metrics}">图表组合</a></li>
+				</ul>
+			</li>
+			<li><a>图标<span class="fa arrow"></span></a>
+				<ul class="nav nav-third-level">
+					<li><a class="menuItem" th:href="@{/demo/icon/fontawesome}">Font Awesome</a></li>
+					<li><a class="menuItem" th:href="@{/demo/icon/glyphicons}">Glyphicons</a></li>
+				</ul>
+			</li>
+			<li><a href="#"><i class="fa fa-sitemap"></i> <span
+					class="nav-label">四层菜单 </span><span class="fa arrow"></span></a>
+				<ul class="nav nav-second-level collapse">
+					<li><a href="#" id="damian">三级菜单1<span class="fa arrow"></span></a>
+						<ul class="nav nav-third-level">
+							<li><a href="#">四级菜单1</a></li>
+							<li><a href="#">四级菜单2</a></li>
+						</ul>
+					</li>
+					<li><a href="#">三级菜单2</a></li>
+				</ul>
+			</li>
+		</ul>
+	</li>
+</div>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('部门列表')" />
+</head>
+<body class="gray-bg">
+	<div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="dept-form">
+					<div class="select-list">
+						<ul>
+							<li>
+								部门名称：<input type="text" name="deptName" placeholder="请输入部门名称"/>
+							</li>
+							<li>
+								部门状态：<select name="status" th:with="type=${@dict.getDict('sys_data_status')}">
+									<option value="">所有</option>
+									<option th:each="dict : ${type}" th:text="${dict.dictName}" th:value="${dict.dictValue}"></option>
+								</select>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.treeTable.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-default btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+                
+            <div class="btn-group-sm" id="toolbar" role="group">
+		        <a class="btn btn-primary" onclick="$.operate.add('root')" shiro:hasPermission="system:dept:add">
+                    <i class="fa fa-plus"></i> 新增
+                </a>
+                <a class="btn btn-primary" onclick="$.operate.edit()" shiro:hasPermission="system:dept:edit">
+		            <i class="fa fa-edit"></i> 修改
+		        </a>
+                <a class="btn btn-primary" id="expandAllBtn">
+                    <i class="fa fa-exchange"></i> 展开/折叠
+                </a>
+	        </div>
+       		 <div class="col-sm-12 select-table table-striped">
+	            <table id="bootstrap-tree-table"></table>
+	        </div>
+	    </div>
+	</div>
+	<th:block th:include="include :: footer" />
+	<script th:inline="javascript">
+		var prefix = ctx + "system/dept"
+
+		$(function() {
+		    var options = {
+		        code: "id",
+		        parentCode: "parentId",
+		        uniqueId: "id",
+		        url: prefix + "/list",
+		        createUrl: prefix + "/add/{id}",
+		        updateUrl: prefix + "/edit/{id}",
+		        removeUrl: prefix + "/remove/{id}",
+		        modalName: "部门",
+		        columns: [{
+                    field: 'selectItem', 
+                    radio: true
+                 },
+                 {
+		            field: 'deptName',
+		            title: '部门名称',
+		            width: '25%'
+		        },
+		        {
+		            field: 'leader',
+		            title: '负责人',
+		            width: '10%'
+		        },
+		        {
+		            field: 'orderNum',
+		            title: '显示顺序',
+		            width: '8%'
+		        },
+		        {
+		            field: 'status',
+		            title: '状态',
+		            width: '5%'
+		        },
+		        {
+		            field: 'remark',
+		            title: '备注',
+		            width: '17%'
+		        },
+		        {
+		            field: 'createTime',
+		            title: '创建时间',
+		            width: '15%'
+		        },
+		        {
+		            title: '操作',
+		            width: '20%',
+		            formatter: function(value, row, index) {
+		            	return $('#operateTpl').tmpl(row).html();
+		            }
+		        }]
+		    };
+		    $.treeTable.init(options);
+		});
+	</script>
+</body>
+<!-- 表格操作列 -->
+<script id="operateTpl" type="text/template">
+<tmpl>
+	<a href="javascript:$.operate.add('${id}')" shiro:hasPermission="system:dept:add" class="btn btn-primary btn-xs">
+		<i class="fa fa-plus"></i> 新增
+	</a>
+	<a href="javascript:$.operate.edit('${id}')" shiro:hasPermission="system:dept:edit" class="btn btn-primary btn-xs">
+		<i class="fa fa-edit"></i> 修改
+	</a>
+	<a href="javascript:$.operate.remove('${id}')" shiro:hasPermission="system:dept:remove" class="btn btn-danger btn-xs">
+		<i class="fa fa-trash"></i> 删除
+	</a> 
+</tmpl>
+</script>
+</html>

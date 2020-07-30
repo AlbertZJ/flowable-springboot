@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('新增费用报销')" />
+	<link th:href="@{/flowable/flowable.css}" rel="stylesheet"/>
+</head>
+<body class="df-flow-body">
+	<div class="df-flow-head">
+		<div class="df-flow-head-icon"><i class="fa fa-desktop fa-2x" aria-hidden="true"></i></div>
+		<div class="df-flow-head-btn">
+			
+		</div>
+	</div>
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content white-bg df-flow-main">
+    	<div class="df-flow-info">
+    		
+    	</div>
+    	<div class="df-flow-content">
+			<ul class="nav nav-tabs" role="tablist">
+			    <li role="presentation" class="active"><a href="#formInfo" aria-controls="formInfo" role="tab" data-toggle="tab">表单信息</a></li>
+		  	</ul>
+			<div class="tab-content">
+			    <div role="tabpanel" class="tab-pane active" id="formInfo">
+			    	<form class="form-horizontal m" id="form-expense-add">
+			    		<input type="hidden" name="callbackId" value="submitExpenseCallback"/><!-- 回调方法标识，对应于/flowable/callback.js的函数名 -->
+	        			<input type="hidden" name="callbackType" value="JQueryFunction"/><!-- 默认这个值 -->
+						<input type="hidden" name="flowTypeId" value="4028b26c73316c440173316d1dc40000"/><!-- 流程类型ID，可以子ID也可以父ID，如果父ID则查询出的流程包含子类流程 -->
+						<input type="hidden" name="deployId"/><!-- 流程部署ID -->
+						<input type="hidden" name="modelKey"/><!-- 流程模板标识 -->
+						<input type="hidden" name="flowName"/><!-- 流程标题名称 -->
+						<input type="hidden" name="token" th:value="${session.token}"/><!-- 防止表单重复提交标识 -->
+						<div class="form-group">	
+							<label class="col-sm-1 control-label">报销标题：</label>
+							<div class="col-sm-11">
+								<input id="title" name="title" class="form-control" placeholder="请输入标题" type="text" required="required">
+							</div>
+						</div>
+						<div class="form-group">	
+							<label class="col-sm-1 control-label">报销金额：</label>
+							<div class="col-sm-11">
+								<input id="money" name="money" class="form-control" placeholder="请输入报销金额（单位：元）" type="text" required="required">
+							</div>
+						</div>
+						<div class="form-group">
+			                <label class="col-xs-1 control-label">报销清单：</label>
+			                <div class="col-xs-11">
+							    <textarea name="content" maxlength="128" class="form-control" placeholder="请输入报销清单（0 ~ 128个字符）" rows="3"></textarea>
+			                </div>
+			            </div>
+			            <div class="form-group">
+							<label class="col-sm-1 control-label">备注：</label>
+							<div class="col-sm-11">
+								<textarea name="remark" maxlength="128" class="form-control" placeholder="请输入备注（0 ~ 128个字符）" rows="3"></textarea>
+							</div>
+						</div>
+					</form>
+			    </div>
+  			</div>
+		</div>
+	</div>
+    <th:block th:include="include :: footer" />
+    <script th:src="@{/flowable/flowable.js}"></script><!-- 流程引擎js -->
+    <script type="text/javascript">
+        var prefix = ctx + "demo/expense";
+		
+		$("#form-expense-add").validate({
+			focusCleanup: true
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	        	flowEngine.actFormPost(prefix + '/add', $('#form-expense-add').serialize(), function(res){
+	        		if(res.code == 0){
+	        			var url = prefix + '/edit/' + res.data.id;
+	        			res.data.flowName = res.data.title;//一般流程任务名称为该业务名称
+						flowEngine.actFlowCallback(res.data,function(res){
+	        				refreshItem(url);
+						});
+					}
+	        	});
+	        }
+	    }
+	</script>
+</body>
+</html>

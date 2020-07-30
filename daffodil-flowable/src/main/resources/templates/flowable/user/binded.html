@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('绑定列表')" />
+	<th:block th:include="include :: layout-latest-css" />
+	<th:block th:include="include :: ztree-css" />
+</head>
+<body class="gray-bg">
+	<div class="ui-layout-center">
+		<div class="container-div">
+			<div class="row">
+				<div class="col-sm-12 search-collapse">
+					<form id="user-form">
+						<input type="hidden" id="typeId" name="tenantId">
+		                <input type="hidden" id="parentId" name="parentId">
+						<div class="select-list">
+							<ul>
+								<li>
+									流程名称：<input type="text" name="name"/>
+								</li>
+								<li>
+									流程标识：<input type="text" name="modelKey"/>
+								</li>
+								<li>
+									<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								    <a class="btn btn-default btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+								</li>
+							</ul>
+						</div>
+					</form>
+				</div>
+				
+		        <div class="btn-group-sm" id="toolbar" role="group">
+		        	<span>用户名称： [[${user.userName}]]</span>
+		        </div>
+		        
+		        <div class="col-sm-12 select-table table-striped">
+				    <table id="bootstrap-table" data-mobile-responsive="true"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: layout-latest-js" />
+	<th:block th:include="include :: ztree-js" />
+	<script th:inline="javascript">
+
+		$(function(){
+		    var options = {
+		        url: ctx + "flowable/user/list/binded/" + [[${user.id}]],
+		        detailUrl: ctx + "flowable/modeler/image/{id}",
+		        sortName: "deployTime",
+		        sortOrder: "desc",
+		        modalName: "流程",
+		        columns: [{
+		            checkbox: true
+		        },
+		        {
+		            field: 'id',
+		            visible: false
+		        },
+		        {
+		            field: 'name',
+		            title: '流程名称'
+		        },
+		        {
+		            field: 'modelKey',
+		            title: '流程标识'
+		        },
+		        {
+		            field: 'category',
+		            title: '流程类型',
+		            formatter: function(value, row, index) {
+                    	return $.table.tooltip(value);
+                    }
+		        },
+		        {
+		            field: 'deployTime',
+		            title: '发布时间',
+		            sortable: true
+		        },
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	return $('#operateTpl').tmpl(row).html();
+		            }
+		        }]
+		    };
+		    $.table.init(options);
+		});
+		
+		function unbinded(id){
+			var ids = $.common.isEmpty(id) ? $.table.selectFirstColumns() : id;
+    	    if (ids.length == 0) {
+    			$.modal.alertWarning("请先选择一条记录");
+    			return;
+    		}
+    		$.modal.confirm("确定要作取消绑定吗？", function() {
+    	    	$.operate.post(ctx + "flowable/user/unbinded", {"deployId" : id, 'userId' : [[${user.id}]] });
+    	    });
+		}
+		
+	</script>
+</body>
+<!-- 表格操作列 -->
+<script id="operateTpl" type="text/template">
+<tmpl>
+	<a href="javascript:$.operate.detail('${modelKey}')" shiro:hasPermission="flowable:modeler:image" class="btn btn-primary btn-xs">
+		<i class="fa fa-search"></i> 流程图
+	</a>
+	<a href="javascript:unbinded('${id}')" shiro:hasPermission="flowable:modeler:unbinded" class="btn btn-danger btn-xs">
+		<i class="fa fa-trash"></i> 取消绑定
+	</a>
+</tmpl>
+</script>
+</html>

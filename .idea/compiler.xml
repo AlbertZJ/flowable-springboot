@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="daffodil-devtool" />
+        <module name="daffodil-flowable" />
+        <module name="daffodil-core" />
+        <module name="daffodil-starter" />
+        <module name="daffodil-system" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="daffodil" target="1.8" />
+      <module name="daffodil-core" target="1.8" />
+      <module name="daffodil-devtool" target="1.8" />
+      <module name="daffodil-flowable" target="1.8" />
+      <module name="daffodil-starter" target="1.8" />
+      <module name="daffodil-system" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="daffodil-core" options="-parameters" />
+      <module name="daffodil-devtool" options="-parameters" />
+      <module name="daffodil-flowable" options="-parameters" />
+      <module name="daffodil-starter" options="-parameters" />
+      <module name="daffodil-system" options="-parameters" />
+    </option>
+  </component>
+</project>

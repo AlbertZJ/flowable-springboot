@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('绑定列表')" />
+	<th:block th:include="include :: layout-latest-css" />
+	<th:block th:include="include :: ztree-css" />
+</head>
+<body class="gray-bg">
+	<div class="ui-layout-west">
+		<div class="box box-main">
+			<div class="box-header">
+				<div class="box-title">
+					<i class="fa icon-grid"></i> 流程类型
+				</div>
+				<div class="box-tools pull-right">
+					<button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;"><i class="fa fa-chevron-up"></i></button>
+					<button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠"><i class="fa fa-chevron-down"></i></button>
+					<button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新部门"><i class="fa fa-refresh"></i></button>
+				</div>
+			</div>
+			<div class="ui-layout-content">
+				<div id="tree" class="ztree"></div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="ui-layout-center">
+		<div class="container-div">
+			<div class="row">
+				<div class="col-sm-12 search-collapse">
+					<form id="user-form">
+						<input type="hidden" id="typeId" name="tenantId">
+		                <input type="hidden" id="parentId" name="parentId">
+						<div class="select-list">
+							<ul>
+								<li>
+									流程名称：<input type="text" name="name"/>
+								</li>
+								<li>
+									流程标识：<input type="text" name="modelKey"/>
+								</li>
+								<li>
+									<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								    <a class="btn btn-default btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+								</li>
+							</ul>
+						</div>
+					</form>
+				</div>
+				
+		        <div class="btn-group-sm" id="toolbar" role="group">
+		        	<span>用户名称： [[${user.userName}]]</span>
+		        </div>
+		        
+		        <div class="col-sm-12 select-table table-striped">
+				    <table id="bootstrap-table" data-mobile-responsive="true"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: layout-latest-js" />
+	<th:block th:include="include :: ztree-js" />
+	<script th:inline="javascript">
+		var prefix = ctx + "flowable/modeler";
+
+		$(function() {
+		    var panehHidden = false;
+		    if ($(this).width() < 769) {
+		        panehHidden = true;
+		    }
+		    $('body').layout({ initClosed: panehHidden, west__size: 185 });
+		    queryDataList();
+		    queryModelTypeTree();
+		});
+
+		function queryDataList() {
+		    var options = {
+		        url: prefix + "/list/deploy",
+		        removeUrl: prefix + "/undeploy",
+		        detailUrl: prefix + "/image/{id}",
+		        sortName: "deployTime",
+		        sortOrder: "desc",
+		        modalName: "流程",
+		        clickToSelect: true,
+		        singleSelect: true,
+		        columns: [{
+		            checkbox: true
+		        },
+		        {
+		            field: 'id',
+		            visible: false
+		        },
+		        {
+		            field: 'name',
+		            title: '流程名称'
+		        },
+		        {
+		            field: 'modelKey',
+		            title: '流程标识'
+		        },
+		        {
+		            field: 'category',
+		            title: '流程类型',
+		            formatter: function(value, row, index) {
+                    	return $.table.tooltip(value);
+                    }
+		        },
+		        {
+		            field: 'deployTime',
+		            title: '发布时间',
+		            sortable: true
+		        },
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	return $('#operateTpl').tmpl(row).html();
+		            }
+		        }]
+		    };
+		    $.table.init(options);
+		}
+		
+		function queryModelTypeTree() {
+			var url = ctx + "flowable/type/treeData";
+			var options = {
+		        url: url,
+		        expandLevel: 1,
+		        onClick : function (event, treeId, treeNode) {
+					$("#typeId").val(treeNode.id);
+					$("#parentId").val(treeNode.pId);
+					$.table.search();
+				}
+		    };
+			$.tree.init(options);
+		}
+		
+		$('#btnExpand').click(function() {
+			$._tree.expandAll(true);
+		    $(this).hide();
+		    $('#btnCollapse').show();
+		});
+		
+		$('#btnCollapse').click(function() {
+			$._tree.expandAll(false);
+		    $(this).hide();
+		    $('#btnExpand').show();
+		});
+		
+		$('#btnRefresh').click(function() {
+			queryDeptTree();
+		});
+		
+		function submitHandler() {
+			var rows = $.table.selectFirstColumns();
+			if (rows.length == 0) {
+       			$.modal.alertWarning("请至少选择一条记录");
+       			return;
+       		}
+			var userId = [[${user.id}]];
+			var data = {"deployId" : rows[0], "userId" : userId};
+			$.operate.saveTab(ctx + "flowable/user/binding", data);
+		}
+	</script>
+</body>
+<!-- 表格操作列 -->
+<script id="operateTpl" type="text/template">
+<tmpl>
+	<a href="javascript:$.operate.detail('${modelKey}')" shiro:hasPermission="flowable:modeler:image" class="btn btn-primary btn-xs">
+		<i class="fa fa-search"></i> 流程图
+	</a>
+</tmpl>
+</script>
+</html>

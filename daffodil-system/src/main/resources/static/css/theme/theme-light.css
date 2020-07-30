@@ -1,0 +1,84 @@
+/** 浅色主题 theme-light **/
+.theme-light .user-panel>.info>p, .theme-light .user-panel>.info, .theme-light .user-panel>.info>a{
+	color: #555
+}
+
+.theme-light .nav>li.active{
+	background: #f9fafc;
+}
+
+.theme-light .navbar-static-side {
+	background-color: #f9fafc;
+	box-shadow: 2px 0 2px 0 rgba(29,35,41,.05);
+}
+
+.theme-light .user-panel {
+	background-color: #f9fafc;
+}
+
+.theme-light .navbar-default .nav>li>a {
+	color: #777;
+}
+
+.theme-light.skin-blue .navbar-default .nav>li.active>a {
+	color: #00a3e8;
+}
+
+.theme-light.skin-blue .navbar-default .nav>li.selected>a,
+.theme-light.skin-blue .navbar-default .nav>li.selected>a:focus {
+	background-color: rgb(240, 245, 255);
+	color: #00a3e8;
+}
+
+.theme-light.skin-green .navbar-default .nav>li.active>a {
+	color: #52c41a;
+}
+
+.theme-light.skin-green .navbar-default .nav>li.selected>a,
+.theme-light.skin-green .navbar-default .nav>li.selected>a:focus {
+	background-color: rgb(246, 255, 237);
+	color: rgb(82, 196, 26);
+}
+
+.theme-light.skin-purple .navbar-default .nav>li.active>a {
+	color: rgb(114, 46, 209);
+}
+
+.theme-light.skin-purple .navbar-default .nav>li.selected>a,
+.theme-light.skin-purple .navbar-default .nav>li.selected>a:focus {
+	background-color: #f9f0ff;
+	color: #722ed1;
+}
+
+.theme-light.skin-red .navbar-default .nav>li.active>a {
+	color: rgb(247, 85, 93);
+}
+
+.theme-light.skin-red .navbar-default .nav>li.selected>a,
+.theme-light.skin-red .navbar-default .nav>li.selected>a:focus {
+	background-color: rgb(255, 241, 240);
+	color: rgb(247, 85, 93);
+}
+
+.theme-light.skin-yellow .navbar-default .nav>li.active>a {
+	color: rgb(250, 173, 20);
+}
+
+.theme-light.skin-yellow .navbar-default .nav>li.selected>a,
+.theme-light.skin-yellow .navbar-default .nav>li.selected>a:focus {
+	background-color: #fffbe6;
+	color: #faad14;
+}
+
+.theme-light .navbar-default .nav>li>a:hover,
+.theme-light .navbar-default .nav>li>a:focus {
+	background-color: rgb(240, 245, 255);
+}
+
+.fixed-sidebar.theme-light.mini-navbar .nav li:hover>a> span.nav-label {
+    background-color: #f9fafc;
+}
+
+.fixed-sidebar.theme-light.mini-navbar .nav li:hover>.nav-second-level {
+    background-color: #f9fafc;
+}

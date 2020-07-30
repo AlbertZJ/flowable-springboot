@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('新增角色')" />
+	<th:block th:include="include :: ztree-css" />
+</head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-role-add">
+			<input type="hidden" name="token" th:value="${session.token}"/>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">角色名称：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="roleName" id="roleName" required="required">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">权限字符：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="roleKey" id="roleKey" required="required">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">显示顺序：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="number" name="orderNum" id="orderNum" required="required">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">状态：</label>
+				<div class="col-sm-8">
+			       <div class="radio-box" th:each="dict : ${@dict.getDict('sys_data_status')}">
+						<input type="radio" th:id="${dict.id}" name="status" th:value="${dict.dictValue}" th:checked="${dict.isDefault == 'Y'}">
+						<label th:for="${dict.id}" th:text="${dict.dictName}"></label>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">备注：</label>
+				<div class="col-sm-8">
+					<input id="remark" name="remark" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">菜单权限</label>
+				<div class="col-sm-8">
+					<div id="menuTrees" class="ztree"></div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: ztree-js" />
+	<script type="text/javascript">
+	    $(function() {
+			var url = ctx + "system/menu/roleMenuTreeData";
+			var options = {
+				id: "menuTrees",
+		        url: url,
+		        check: { enable: true },
+		        expandLevel: 0
+		    };
+			$.tree.init(options);
+		});
+		
+		$("#form-role-add").validate({
+			rules:{
+				onkeyup: false,
+				roleName:{
+					remote: {
+		                url: ctx + "system/role/checkRoleNameUnique",
+		                type: "get",
+		                dataType: "json",
+		                data: {
+		                	"roleName" : function() {
+		                		return $.common.trim($("#roleName").val());
+		                    }
+		                },
+		                dataFilter: function(data, type) {
+		                	return $.validate.unique(data);
+		                }
+		            }
+				},
+				roleKey:{
+					remote: {
+		                url: ctx + "system/role/checkRoleKeyUnique",
+		                type: "get",
+		                dataType: "json",
+		                data: {
+		                	"roleKey" : function() {
+		                        return $.common.trim($("#roleKey").val());
+		                    }
+		                },
+		                dataFilter: function(data, type) {
+		                	return $.validate.unique(data);
+		                }
+		            }
+				},
+				orderNum:{
+					digits:true
+				},
+			},
+			messages: {
+		        "roleName": {
+		            remote: "角色名称已经存在"
+		        },
+		        "roleKey": {
+		            remote: "角色权限已经存在"
+		        }
+		    },
+		    focusCleanup: true
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	        	var data = $("#form-role-add").serializeArray();
+				var menuIds = $.tree.getCheckedNodes();
+				data.push({name : "menuIds", value : menuIds});
+				$.ajax({
+					cache : true,
+					type : "POST",
+					url : ctx + "system/role/add",
+					data : data,
+					async : false,
+					error : function(request) {
+						$.modal.alertError("系统错误");
+					},
+					success : function(data) {
+						$.operate.successCallback(data);
+					}
+				});
+	        }
+	    }
+	
+	</script>
+</body>
+</html>

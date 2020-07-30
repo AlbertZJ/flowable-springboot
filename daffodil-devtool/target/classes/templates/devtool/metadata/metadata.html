@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('元数据列表')" />
+</head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="metadata-form">
+					<input type="hidden" id="tableId" name="tableId" th:value="${tableId}">
+					<div class="select-list">
+						<ul>
+							<li>
+								元数据名称：<input type="text" name="columnName" placeholder="请输入元数据名称"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-default btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm" id="toolbar" role="group">
+		        <a class="btn btn-primary" onclick="$.operate.add()" shiro:hasPermission="devtool:metadata:add">
+		            <i class="fa fa-plus"></i> 新增
+		        </a>
+		        <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="devtool:metadata:edit">
+		            <i class="fa fa-edit"></i> 修改
+		        </a>
+		        <a class="btn btn-primary multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="devtool:metadata:remove">
+		            <i class="fa fa-trash"></i> 删除
+		        </a>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+	            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+	        </div>
+    	</div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "devtool/metadata";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "元数据",
+                sortName: "createTime",
+		        sortOrder: "desc",
+                columns: [{
+		            checkbox: true
+		        },
+		        {
+		            field: 'id',
+		            visible: false
+		        },
+				{
+					field : 'columnName', 
+					title : '元数据名称' 
+				},
+				{
+		            field: 'columnType',
+		            title: '元数据类型',
+		            align: 'center'
+		        },
+				{
+		            field: 'columnComment',
+		            title: '元数据描述'
+		        },
+		        {
+		            field: 'remark',
+		            title: '备注'
+		        },
+				{
+		            field: 'createTime',
+		            title: '创建时间',
+		            sortable: true
+		        },
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	return $('#operateTpl').tmpl(row).html();
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+        
+        /* 添加字段-确认-提交 */
+		function submitHandler() {
+			var rows = $.table.selectFirstColumns();
+			if (rows.length == 0) {
+       			$.modal.alertWarning("请至少选择一条记录");
+       			return;
+       		}
+			var data = { "tableId": $("#tableId").val(), "columnIds": rows.join() };
+			$.operate.save(ctx + "devtool/table/column/add", data);
+		}
+    </script>
+</body>
+<!-- 表格操作列 -->
+<script id="operateTpl" type="text/template">
+<tmpl>
+	<a href="javascript:$.operate.edit('${id}')" shiro:hasPermission="devtool:metadata:edit" class="btn btn-primary btn-xs">
+		<i class="fa fa-edit"></i> 修改
+	</a>
+	<a href="javascript:$.operate.remove('${id}')" shiro:hasPermission="devtool:metadata:remove" class="btn btn-danger btn-xs">
+		<i class="fa fa-trash"></i> 删除
+	</a> 
+</tmpl>
+</script>
+</html>

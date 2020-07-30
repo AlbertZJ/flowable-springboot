@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('角色用户分配')" />
+</head>
+<body class="gray-bg">
+	<div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="role-form">
+				    <input type="hidden" id="roleId" name="id" th:value="${role.id}">
+					<div class="select-list">
+						<ul>
+							<li>
+								登录名称：<input type="text" name="loginName"/>
+							</li>
+							<li>
+								邮箱账号：<input type="text" name="email"/>
+							</li>
+							<li>
+								手机号码：<input type="text" name="phone"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							    <a class="btn btn-default btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+	        
+	        <div class="btn-group-sm" id="toolbar" role="group">
+				<a class="btn btn-primary" onclick="selectUser()" shiro:hasPermission="system:role:add">
+	                <i class="fa fa-plus"></i> 添加用户
+	            </a>
+				<a class="btn btn-primary multiple disabled" onclick="cancelAuthUserAll()" shiro:hasPermission="system:role:remove">
+		            <i class="fa fa-trash"></i> 批量取消授权
+		        </a>
+		        <a class="btn btn-primary" onclick="closeItem()">
+		            <i class="fa fa-reply-all"></i> 返回
+		        </a>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+			    <table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+	<th:block th:include="include :: footer" />
+	<script th:inline="javascript">
+		var prefix = ctx + "system/role/authUser";
+
+		$(function() {
+			var options = {
+		        url: prefix + "/allocatedList",
+		        queryParams: function (params) {
+					var search = $.table.queryParams(params);
+					search.roleIds = $("#roleId").val();
+					return search;
+				},
+		        sortName: "createTime",
+		        sortOrder: "desc",
+		        modalName: "用户",
+		        columns: [{
+		            checkbox: true
+		        },
+		        {
+		            field: 'id',
+		            visible: false
+		        },
+		        {
+		            field: 'loginName',
+		            title: '登录名称',
+		            sortable: true
+		        },
+		        {
+		            field: 'userName',
+		            title: '用户名称'
+		        },
+		        {
+		            field: 'email',
+		            title: '邮箱账号'
+		        },
+		        {
+		            field: 'phone',
+		            title: '手机号码'
+		        },
+		        {
+		        	field: 'status',
+		        	title: '用户状态',
+		        	align: 'center'
+		        },
+		        {
+		            field: 'createTime',
+		            title: '创建时间',
+		            sortable: true
+		        },
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	return $('#operateTpl').tmpl(row).html();
+		            }
+		        }]
+		    };
+		    $.table.init(options);
+		});
+		
+		/* 分配用户-选择用户 */
+		function selectUser() {
+			var url = prefix + '/selectUser/' + $("#roleId").val();
+		    $.modal.openFull("选择用户", url);
+		}
+		
+		/* 分配用户-批量取消授权 */
+		function cancelAuthUserAll() {
+		    var rows = $.table.selectFirstColumns();
+       		$.modal.confirm("确认要取消选中的" + rows.length + "条用户角色权限吗?", function() {
+    			var data = { "roleId": $("#roleId").val(), "userIds": rows.join(",") };
+    			$.operate.submit(prefix + "/cancelAll", "post", "json", data);
+    		});
+		}
+		
+		/* 分配用户-取消授权 */
+		function cancelAuthUser(userId) {
+			$.modal.confirm("确认要取消选中的用户角色权限吗？", function() {
+				$.operate.post(prefix + "/cancel", { "roleId": $("#roleId").val(), "userId": userId });
+		    })
+		}
+	</script>
+</body>
+<!-- 表格操作列 -->
+<script id="operateTpl" type="text/template">
+<tmpl>
+	<a href="javascript:cancelAuthUser('${id}')" shiro:hasPermission="system:role:remove" class="btn btn-danger btn-xs">
+		<i class="fa fa-trash"></i>取消授权
+	</a> 
+</tmpl>
+</script>
+</html>

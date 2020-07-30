@@ -1,0 +1,19 @@
+-- 菜单 SQL
+insert into sys_menu (menu_id, menu_name, parent_id, order_num, url,menu_type, visible, perms, icon, target, create_by, create_time)
+values('${menuIds[0]}', '${functionName}', 'root', '999', '/${moduleName}/${businessName}', 'menu', '0', '${permissionPrefix}:view', '', 'menuItem', '${author}', sysdate());
+
+-- 按钮 SQL
+insert into sys_menu  (menu_id, menu_name, parent_id, order_num, url,menu_type, visible, perms, icon, target, create_by, create_time)
+values('${menuIds[1]}', '${functionName}查询', '${menuIds[0]}', '1',  '#',  'button', '0', '${permissionPrefix}:list',  '', 'menuItem', '${author}', sysdate());
+
+insert into sys_menu  (menu_id, menu_name, parent_id, order_num, url,menu_type, visible, perms, icon, target, create_by, create_time)
+values('${menuIds[2]}', '${functionName}新增', '${menuIds[0]}', '2',  '#',  'button', '0', '${permissionPrefix}:add',   '', 'menuItem', '${author}', sysdate());
+
+insert into sys_menu  (menu_id, menu_name, parent_id, order_num, url,menu_type, visible, perms, icon, target, create_by, create_time)
+values('${menuIds[3]}', '${functionName}修改', '${menuIds[0]}', '3',  '#',  'button', '0', '${permissionPrefix}:edit',  '', 'menuItem', '${author}', sysdate());
+
+insert into sys_menu  (menu_id, menu_name, parent_id, order_num, url,menu_type, visible, perms, icon, target, create_by, create_time)
+values('${menuIds[4]}', '${functionName}删除', '${menuIds[0]}', '4',  '#',  'button', '0', '${permissionPrefix}:remove','', 'menuItem', '${author}', sysdate());
+
+insert into sys_menu  (menu_id, menu_name, parent_id, order_num, url,menu_type, visible, perms, icon, target, create_by, create_time)
+values('${menuIds[5]}', '${functionName}导出', '${menuIds[0]}', '5',  '#',  'button', '0', '${permissionPrefix}:export','', 'menuItem', '${author}', sysdate());

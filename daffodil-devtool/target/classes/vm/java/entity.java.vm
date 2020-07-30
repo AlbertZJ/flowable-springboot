@@ -1,0 +1,110 @@
+package ${packageName}.entity;
+
+#foreach ($import in $importList)
+import ${import};
+#end
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+
+import org.hibernate.annotations.GenericGenerator;
+
+import com.daffodil.core.annotation.Dict;
+import com.daffodil.core.annotation.Excel;
+import com.daffodil.core.annotation.Excel.Type;
+import com.daffodil.core.annotation.Hql;
+import com.daffodil.core.annotation.Hql.Logical;
+#if($table.crud)
+import com.daffodil.core.entity.BaseEntity;
+#elseif($table.tree)
+import com.daffodil.core.entity.TreeEntity;
+#end
+
+/**
+ * ${functionName}对象 ${tableName}
+ * 
+ * @author ${author}
+ * @date ${datetime}
+ * @version 1.0
+ */
+#if($table.crud)
+#set($Entity="BaseEntity")
+#elseif($table.tree)
+#set($Entity="TreeEntity")
+#end
+@Entity
+@Table(name = "${tableName}")
+public class ${ClassName} extends ${Entity} {
+
+    private static final long serialVersionUID = 1L;
+
+#foreach ($column in $columns)
+#if($column.isPk != 'Y')
+    /** $column.columnComment */
+    private $column.columnType $column.javaField;
+    
+#end
+#end
+#foreach ($column in $columns)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#if($column.isPk == 'Y')
+    @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid")
+    @Column(name = "$column.columnName")
+    @Excel(name = "$column.columnComment", type = Type.EXPORT)
+#else
+    @Column(name = "$column.columnName")
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($parentheseIndex != -1)
+    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+#elseif($column.columnType == 'Date')
+    @Excel(name = "${comment}", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+#else
+    @Excel(name = "${comment}")
+#end
+#if($column.isRequired == 'Y' && $column.columnType == 'String')
+    @NotBlank(message = "${comment}不能为空")
+#end
+#end
+#if($column.queryType != '')
+    @Hql(type = Logical.$column.queryType)
+#end
+#if($column.dictType != '')
+    @Dict(value = "${column.dictType}")
+#end
+#if($column.isPk == 'Y')
+    @Override
+    public String getId() {
+        return super.getId();
+    }
+#else
+    public $column.columnType get${AttrName}() {
+        return $column.javaField;
+    }
+    
+    public void set${AttrName}($column.columnType $column.javaField) {
+        this.$column.javaField = $column.javaField;
+    }
+
+#end  
+#end
+#if($table.tree)
+	@Column(name = "ancestors")
+	@Override
+	public String getAncestors() {
+		return super.getAncestors();
+	}
+#end
+
+}

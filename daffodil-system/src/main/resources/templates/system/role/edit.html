@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('修改角色')" />
+	<th:block th:include="include :: ztree-css" />
+</head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-role-edit" th:object="${role}">
+			<input id="roleId" name="id" type="hidden" th:field="*{id}"/>
+			<div class="form-group">
+				<label class="col-sm-3 control-label ">角色名称：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="roleName" id="roleName" th:field="*{roleName}" required="required">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">权限字符：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="roleKey" id="roleKey" th:field="*{roleKey}" required="required">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">显示顺序：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="number" name="orderNum" id="orderNum" th:field="*{orderNum}" required="required">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">状态：</label>
+				<div class="col-sm-8">
+					<div class="radio-box" th:each="dict : ${@dict.getDict('sys_data_status')}">
+						<input type="radio" th:id="${dict.id}" name="status" th:value="${dict.dictValue}" th:field="*{status}">
+						<label th:for="${dict.id}" th:text="${dict.dictName}"></label>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">备注：</label>
+				<div class="col-sm-8">
+					<input id="remark" name="remark" class="form-control" type="text" th:field="*{remark}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">菜单权限</label>
+				<div class="col-sm-8">
+					<div id="menuTrees" class="ztree"></div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: ztree-js" />
+	<script type="text/javascript">
+		var prefix = ctx + "system/role";
+		
+		$(function() {
+			var url = ctx + "system/menu/roleMenuTreeData?id=" + $("#roleId").val();
+			var options = {
+				id: "menuTrees",
+		        url: url,
+		        check: { enable: true },
+		        expandLevel: 0
+		    };
+			$.tree.init(options);
+		});
+	
+		$("#form-role-edit").validate({
+			onkeyup: false,
+			rules:{
+				roleName:{
+					remote: {
+		                url: prefix + "/checkRoleNameUnique",
+		                type: "get",
+		                dataType: "json",
+		                data: {
+		                	id: function() {
+							    return $("#roleId").val();
+							},
+							roleName: function() {
+							    return $.common.trim($("#roleName").val());
+							}
+		                },
+		                dataFilter: function(data, type) {
+		                	return $.validate.unique(data);
+		                }
+		            }
+				},
+				roleKey:{
+					remote: {
+		                url: prefix + "/checkRoleKeyUnique",
+		                type: "get",
+		                dataType: "json",
+		                data: {
+		                	id: function() {
+								return $("#roleId").val();
+							},
+							roleKey: function() {
+							    return $.common.trim($("#roleKey").val());
+							}
+		                },
+		                dataFilter: function(data, type) {
+		                	return $.validate.unique(data);
+		                }
+		            }
+				},
+				orderNum:{
+					digits:true
+				},
+			},
+			messages: {
+				roleName: {
+		            remote: "角色名称已经存在"
+		        },
+		        roleKey: {
+		            remote: "角色权限已经存在"
+		        }
+		    },
+		    focusCleanup: true
+		});
+
+		function submitHandler() {
+	        if ($.validate.form()) {
+	        	var data = $("#form-role-edit").serializeArray();
+				var menuIds = $.tree.getCheckedNodes();
+				data.push({name : "menuIds", value : menuIds});
+				$.operate.saveTab(prefix + "/edit", data);
+	        }
+	    }
+	</script>
+</body>
+</html>

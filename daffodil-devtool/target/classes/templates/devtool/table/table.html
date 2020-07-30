@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('数据库表列表')" />
+</head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="table-form">
+					<div class="select-list">
+						<ul>
+							<li>
+								库表名称：<input type="text" name="tableName" placeholder="请输入库表名称"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-default btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm" id="toolbar" role="group">
+		        <a class="btn btn-primary" onclick="$.operate.add()" shiro:hasPermission="devtool:table:add">
+		            <i class="fa fa-plus"></i> 新增
+		        </a>
+		        <a class="btn btn-primary single disabled" onclick="$.operate.editTab()" shiro:hasPermission="devtool:table:edit">
+		            <i class="fa fa-edit"></i> 修改
+		        </a>
+		        <a class="btn btn-primary multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="devtool:table:remove">
+		            <i class="fa fa-trash"></i> 删除
+		        </a>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+	            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+	        </div>
+    	</div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "devtool/table";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "数据库表",
+                sortName: "createTime",
+		        sortOrder: "desc",
+                columns: [{
+		            checkbox: true
+		        },
+		        {
+		            field: 'id',
+		            visible: false
+		        },
+				{
+					field : 'tableName', 
+					title : '库表名称' 
+				},
+				{
+		            field: 'tableComment',
+		            title: '库表描述'
+		        },
+		        {
+		            field: 'className',
+		            title: '实体类名称'
+		        },
+		        {
+		            field: 'functionAuthor',
+		            title: '作者名称'
+		        },
+		        {
+		            field: 'remark',
+		            title: '备注'
+		        },
+				{
+		            field: 'createTime',
+		            title: '创建时间',
+		            sortable: true
+		        },
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	return $('#operateTpl').tmpl(row).html();
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+        
+        // 预览代码
+		function preview(tableId) {
+			var url = prefix + "/preview/" + tableId;
+			$.modal.loading("正在加载数据，请稍后...");
+			$.get(url, function(result) {
+				if (result.code == web_status.SUCCESS) {
+					 var items = [];
+		                $.each(result.data, function(index, value) {
+		                	value = value.replace(/</g, "&lt;");
+		                	value = value.replace(/>/g, "&gt;");
+		                    var templateName = index.substring(index.lastIndexOf("/") + 1, index.length).replace(/\.vm/g, "");
+		                    items.push({
+		                        title: templateName , content: "<pre class=\"layui-code\">" + value + "</pre>"
+		                    })
+		                });
+		                top.layer.tab({
+		                    area: ['90%', '90%'],
+		                    shadeClose: true,
+		                    tab: items
+		                });
+				} else {
+					$.modal.alertError(result.msg);
+				}
+				$.modal.closeLoading();
+			});
+		}
+		
+		//生成代码（下载）
+		function generate(tableId){
+			$.modal.confirm("确定要生成代码吗？", function() {
+		    	location.href = prefix + "/generate/" + tableId;
+		        layer.msg('执行成功，正在生成代码请稍...', { icon: 1 });
+		    })
+		}
+		
+    </script>
+</body>
+<!-- 表格操作列 -->
+<script id="operateTpl" type="text/template">
+<tmpl>
+	<a href="javascript:$.operate.editTab('${id}')" shiro:hasPermission="devtool:table:edit" class="btn btn-primary btn-xs">
+		<i class="fa fa-edit"></i> 修改
+	</a>
+	<a href="javascript:preview('${id}')" shiro:hasPermission="devtool:table:preview" class="btn btn-primary btn-xs">
+		<i class="fa fa-search"></i> 预览
+	</a>
+	<a href="javascript:generate('${id}')" shiro:hasPermission="devtool:table:edit" class="btn btn-primary btn-xs">
+		<i class="fa fa-book"></i> 生成
+	</a>
+	<a href="javascript:$.operate.remove('${id}')" shiro:hasPermission="devtool:table:remove" class="btn btn-danger btn-xs">
+		<i class="fa fa-trash"></i> 删除
+	</a> 
+</tmpl>
+</script>
+</html>

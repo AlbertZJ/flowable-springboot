@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+  <process id="Expense" name="经理级别-差旅报销" isExecutable="true">
+    <documentation>报销流程</documentation>
+    <startEvent id="start" name="开始"></startEvent>
+    <userTask id="fillTask" name="出差报销" flowable:assignee="$INITIATOR">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="judgeTask"></exclusiveGateway>
+    <userTask id="directorTak" name="财务审批" flowable:candidateGroups="40283e816f92646d016f926a76fd0003">
+      <extensionElements>
+        <modeler:group-info-name-40283e816f92646d016f926a76fd0003 xmlns:modeler="http://flowable.org/modeler"><![CDATA[财务管理员]]></modeler:group-info-name-40283e816f92646d016f926a76fd0003>
+        <modeler:activiti-idm-candidate-group xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:activiti-idm-candidate-group>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <userTask id="bossTask" name="老板审批" flowable:candidateGroups="402855816f1e2a2e016f1e2a45510000">
+      <extensionElements>
+        <modeler:group-info-name-402855816f1e2a2e016f1e2a45510000 xmlns:modeler="http://flowable.org/modeler"><![CDATA[超级管理员]]></modeler:group-info-name-402855816f1e2a2e016f1e2a45510000>
+        <modeler:activiti-idm-candidate-group xmlns:modeler="http://flowable.org/modeler"><![CDATA[true]]></modeler:activiti-idm-candidate-group>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
+    <endEvent id="end" name="结束"></endEvent>
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="fillTask"></sequenceFlow>
+    <sequenceFlow id="judgeMore" name="大于500元" sourceRef="judgeTask" targetRef="bossTask">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${money > 500}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="judgeLess" name="小于500元" sourceRef="judgeTask" targetRef="directorTak">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${money <= 500}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow2" name="提交" sourceRef="fillTask" targetRef="judgeTask"></sequenceFlow>
+    <sequenceFlow id="bossNotPassFlow" name="驳回" sourceRef="bossTask" targetRef="fillTask">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ handle == '驳回' }]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="bossPassFlow" name="同意" sourceRef="bossTask" targetRef="directorTak">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ handle == '同意' }]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="directorNotPassFlow" name="驳回" sourceRef="directorTak" targetRef="fillTask">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ handle == '驳回' }]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="directorPassFlow" name="同意" sourceRef="directorTak" targetRef="end">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ handle == '同意' }]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Expense">
+    <bpmndi:BPMNPlane bpmnElement="Expense" id="BPMNPlane_Expense">
+      <bpmndi:BPMNShape bpmnElement="start" id="BPMNShape_start">
+        <omgdc:Bounds height="30.0" width="30.0" x="45.0" y="135.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="fillTask" id="BPMNShape_fillTask">
+        <omgdc:Bounds height="80.0" width="100.0" x="165.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="judgeTask" id="BPMNShape_judgeTask">
+        <omgdc:Bounds height="40.0" width="40.0" x="345.0" y="130.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="directorTak" id="BPMNShape_directorTak">
+        <omgdc:Bounds height="80.0" width="100.0" x="495.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="bossTask" id="BPMNShape_bossTask">
+        <omgdc:Bounds height="80.0" width="100.0" x="315.0" y="255.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="end" id="BPMNShape_end">
+        <omgdc:Bounds height="28.0" width="28.0" x="720.0" y="136.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="74.94999923927439" y="150.0"></omgdi:waypoint>
+        <omgdi:waypoint x="164.9999999999684" y="150.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="264.9499999998728" y="150.0"></omgdi:waypoint>
+        <omgdi:waypoint x="345.0" y="150.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="judgeLess" id="BPMNEdge_judgeLess">
+        <omgdi:waypoint x="384.9444614102993" y="150.0"></omgdi:waypoint>
+        <omgdi:waypoint x="494.99999999997226" y="150.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="directorNotPassFlow" id="BPMNEdge_directorNotPassFlow">
+        <omgdi:waypoint x="545.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="545.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="215.0" y="37.0"></omgdi:waypoint>
+        <omgdi:waypoint x="215.0" y="110.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="bossPassFlow" id="BPMNEdge_bossPassFlow">
+        <omgdi:waypoint x="414.9499999999431" y="295.0"></omgdi:waypoint>
+        <omgdi:waypoint x="545.0" y="295.0"></omgdi:waypoint>
+        <omgdi:waypoint x="545.0" y="189.95"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="judgeMore" id="BPMNEdge_judgeMore">
+        <omgdi:waypoint x="365.0" y="169.94312543073744"></omgdi:waypoint>
+        <omgdi:waypoint x="365.0" y="255.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="directorPassFlow" id="BPMNEdge_directorPassFlow">
+        <omgdi:waypoint x="594.9499999999675" y="150.0"></omgdi:waypoint>
+        <omgdi:waypoint x="720.0" y="150.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="bossNotPassFlow" id="BPMNEdge_bossNotPassFlow">
+        <omgdi:waypoint x="315.0" y="295.0"></omgdi:waypoint>
+        <omgdi:waypoint x="215.0" y="295.0"></omgdi:waypoint>
+        <omgdi:waypoint x="215.0" y="189.95"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

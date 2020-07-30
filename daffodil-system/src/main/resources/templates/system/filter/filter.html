@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('过滤约束列表')" />
+</head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="filter-form">
+					<div class="select-list">
+						<ul>
+							<li>
+								约束名称：<input type="text" name="filterName" placeholder="请输入约束名称"/>
+							</li>
+							<li>
+								约束状态：<select name="status" th:with="type=${@dict.getDict('sys_data_status')}">
+									<option value="">所有</option>
+									<option th:each="dict : ${type}" th:text="${dict.dictName}" th:value="${dict.dictValue}"></option>
+								</select>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-default btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm" id="toolbar" role="group">
+		        <a class="btn btn-primary" onclick="$.operate.add()" shiro:hasPermission="system:filter:add">
+		            <i class="fa fa-plus"></i> 新增
+		        </a>
+		        <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:filter:edit">
+		            <i class="fa fa-edit"></i> 修改
+		        </a>
+		        <a class="btn btn-primary multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:filter:remove">
+		            <i class="fa fa-trash"></i> 删除
+		        </a>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+	            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+	        </div>
+    	</div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "system/filter";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "约束",
+                sortName: "orderNum",
+		        sortOrder: "desc",
+                columns: [{
+		            checkbox: true
+		        },
+		        {
+		            field: 'id',
+		            visible: false
+		        },
+				{
+					field : 'filterName', 
+					title : '约束名称' 
+				},
+				{
+		            field: 'filterKey',
+		            title: '约束表达式'
+		        },
+		        {
+		            field: 'filterValue',
+		            title: '约束方法值'
+		        },
+		        {
+		            field: 'remark',
+		            title: '备注',
+		            formatter: function(value, row, index) {
+                    	return $.table.tooltip(value);
+                    }
+		        },
+		        {
+		            field: 'status',
+		            title: '状态',
+		            align: 'center'
+		        },
+				{
+					field : 'orderNum', 
+					title : '显示顺序' ,
+					align: 'center',
+					sortable: true
+				},
+				{
+		            field: 'createTime',
+		            title: '创建时间',
+		            sortable: true
+		        },
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	return $('#operateTpl').tmpl(row).html();
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+<!-- 表格操作列 -->
+<script id="operateTpl" type="text/template">
+<tmpl>
+	<a href="javascript:$.operate.edit('${id}')" shiro:hasPermission="system:filter:edit" class="btn btn-primary btn-xs">
+		<i class="fa fa-edit"></i> 修改
+	</a>
+	<a href="javascript:$.operate.remove('${id}')" shiro:hasPermission="system:filter:remove" class="btn btn-danger btn-xs">
+		<i class="fa fa-trash"></i> 删除
+	</a> 
+</tmpl>
+</script>
+</html>

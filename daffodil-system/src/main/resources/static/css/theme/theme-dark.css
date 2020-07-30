@@ -1,0 +1,30 @@
+
+/** 深色主题 .theme-dark **/
+.theme-dark .user-panel>.info>p, .theme-dark .user-panel>.info, .theme-dark .user-panel>.info>a{
+	color: #fff
+}
+
+.theme-dark .nav>li.active {
+	background: #293846;
+}
+
+.theme-dark .navbar-static-side {
+	background-color: #2f4050;
+}
+
+.theme-dark .user-panel {
+	background-color: #2f4050;
+}
+
+.theme-dark .navbar-default .nav>li>a:hover,
+.theme-dark .navbar-default .nav>li>a:focus {
+	background: #293846;
+}
+
+.fixed-sidebar.theme-light.mini-navbar .nav li:hover>a> span.nav-label {
+    background-color: #f9fafc;
+}
+
+.fixed-sidebar.theme-light.mini-navbar .nav li:hover>.nav-second-level {
+    background-color: #f9fafc;
+}

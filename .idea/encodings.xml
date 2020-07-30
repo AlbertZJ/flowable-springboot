@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/daffodil-core/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/daffodil-devtool/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/daffodil-devtool/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/daffodil-flowable/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/daffodil-flowable/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/daffodil-starter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/daffodil-starter/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/daffodil-system/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/daffodil-system/src/main/resources" charset="UTF-8" />
+  </component>
+</project>
